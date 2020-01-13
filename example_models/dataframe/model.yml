@@ -1,0 +1,30 @@
+name: "Neuron (DataFrame)"
+version: "0.0.1"
+
+contact:
+  name: "Leap Beyond"
+  email: "info@leapbeyond.ai"
+
+io_type: PANDAS_DATA_FRAME
+
+schema:
+  input:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        inputs:
+          type: "array"
+          items:
+            type: "number"
+        weights:
+          type: "array"
+          items:
+            type: "number"
+  output:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        activation:
+          type: "number"

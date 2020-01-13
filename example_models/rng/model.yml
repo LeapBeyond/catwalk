@@ -1,0 +1,24 @@
+name: "RNGModel"
+version: "0.0.1"
+
+contact:
+  name: "Leap Beyond"
+  email: "info@leapbeyond.ai"
+
+schema:
+  input:
+    type: "object"
+    properties:
+      seed:
+        type: "integer"
+      seed_version:
+        type: "integer"
+      mu:
+        type: "number"
+      sigma:
+        type: "number"
+  output:
+    type: "object"
+    properties:
+      score:
+        type: "number"

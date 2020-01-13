@@ -1,0 +1,24 @@
+name: "Neuron"
+version: "0.0.1"
+
+contact:
+  name: "Leap Beyond"
+  email: "info@leapbeyond.ai"
+
+schema:
+  input:
+    type: "object"
+    properties:
+      inputs:
+        type: "array"
+        items:
+          type: "number"
+      weights:
+        type: "array"
+        items:
+          type: "number"
+  output:
+    type: "object"
+    properties:
+      activation:
+        type: "number"

@@ -1,0 +1,10 @@
+FROM {{ docker_registry }}/catwalk/base:{{ catwalk_version }}
+
+COPY . model/
+RUN if [ -f "model/requirements.txt" ]; then cd model && pip install -r requirements.txt && cd ..; fi
+
+ENV MODEL_PATH model
+ENV SERVER_CONFIG=conf/application.yml
+ENV SERVER_PORT={{ port }}
+
+CMD catwalk serve

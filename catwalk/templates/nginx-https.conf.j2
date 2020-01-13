@@ -1,0 +1,35 @@
+worker_processes 1;
+daemon off; # Prevent forking
+
+
+pid /tmp/nginx.pid;
+error_log {{ error_log }};
+
+events {
+  # defaults
+}
+
+http {
+  access_log {{ access_log }} combined;
+  
+  upstream gunicorn {
+    server unix:/tmp/gunicorn.sock;
+  }
+
+  server {
+    listen {{ port }} ssl;
+    ssl_certificate {{ ssl_cert_path }};
+    ssl_certificate_key {{ ssl_key_path }};
+    client_max_body_size 5m;
+
+    keepalive_timeout 5;
+    proxy_read_timeout 1200s;
+
+    location / {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+      proxy_redirect off;
+      proxy_pass https://gunicorn;
+    }
+  }
+}

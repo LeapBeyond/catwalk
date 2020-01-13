@@ -1,0 +1,28 @@
+name: "BatchRNGModel"
+version: "0.0.1"
+
+contact:
+  name: "Leap Beyond"
+  email: "info@leapbeyond.ai"
+
+schema:
+  input:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        seed:
+          type: "integer"
+        seed_version:
+          type: "integer"
+        mu:
+          type: "number"
+        sigma:
+          type: "number"
+  output:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        score:
+          type: "number"

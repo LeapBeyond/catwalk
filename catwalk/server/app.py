@@ -1,0 +1,184 @@
+import json
+import yaml
+import sys
+import logging
+import copy
+import os.path as osp
+
+from flask import Flask, Response, request
+from werkzeug.exceptions import BadRequest
+from schema import SchemaError
+
+# pandas must be installed by a model's requirements.txt, to avoid binary incompatabilities between versions
+# this will succeed if the model has the requirement (this is test in the test_model script)
+try:
+    import pandas as pd
+except ImportError as err:
+    pass
+
+from ..helpers.configuration import app_config
+from ..helpers.logging import get_logger_from_app_config
+
+from ..validation.schema import get_request_schema
+from ..validation.model import is_loaded_model, ModelIOTypes
+
+# Init Flask app
+app = Flask(__name__)
+model = None
+in_schema = None
+
+# Default to Flask's logger
+logger = app.logger
+logger.setLevel(logging.INFO)
+
+
+def json_response(response_data, status_code=200) -> Response:
+    """A helper function that returns a JSON response with the correct headers.
+
+    :param dict response_data: The data to output as a JSON response.
+    :param int status_code: The HTTP status code.
+    :return Response: the HTTP response object.
+    """
+    if status_code != 200:
+        logger.error("Returning code {} with message {}".format(status_code, response_data["response"]["message"]))
+
+    json_str = json.dumps(response_data)
+    return Response(json_str, status_code, mimetype="application/json")
+
+
+def api_error(message, status_code=500, request_data=None) -> Response:
+    """A helper function that returns a JSON response for a server error.
+
+    :param str message: The error message to return.
+    :param int status_code: The HTTP status code.
+    :param dict request_data: Optional request data that was sent (this may be empty for e.g. a 400 Bad Request).
+    :return Response: the HTTP response object.
+    """
+    if request_data is not None:
+        response = copy.deepcopy(request_data)
+    else:
+        response = {}
+    response["response"] = {"message": message}
+    return json_response(response, status_code)
+
+
+@app.route("/")
+def index() -> Response:
+    """The info end-point, returns metadata about the loaded model.
+    :return Response:
+    """
+    logger.info("Info message received")
+    if model is None:
+        return api_error("No model loaded.")
+
+    return json_response(model.info)
+
+
+@app.route("/predict", methods=["POST"])
+def predict() -> Response:
+    """The predict end-point, validates and runs the predict method on the loaded model.
+
+    :return Response:
+    """
+    logger.info("Predict message received")
+
+    # Early exit if no model is loaded
+    if model is None:
+        return api_error("No model loaded.")
+
+    # Try to parse the JSON body
+    try:
+        data = request.get_json()
+    except BadRequest as err:
+        return api_error("Invalid POST data.", 400)
+
+    # Try to validate the input data
+    try:
+        in_schema.validate(data)
+    except SchemaError as err:
+        return api_error("Invalid POST data.", 400)
+
+    # Test to see if the model loaded matches the request
+    if "model" in data:
+        if not is_loaded_model(data, model.info):
+            return api_error("Model not found.", 404, data)
+    else:
+        data["model"] = {
+            "name": model.info["name"],
+            "version": model.info["version"]
+        }
+
+    # All checks complete, run predict
+    logger.info("correlation_id: %s data validated.", data["correlation_id"])
+
+    X = data["request"]
+    if model.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
+        X = pd.DataFrame.from_dict(X)
+    r = model.predict(X)
+
+    if model.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
+        r = r.to_dict(orient="records")
+
+    # Save the result to the request object and return
+    data["response"] = r
+
+    logger.info("correlation_id: %s returning response.", data["correlation_id"])
+
+    return json_response(data)
+
+
+@app.route("/status")
+def status():
+    """A simple status end-point for health checks on the service
+    """
+    return ""
+
+
+def load_model(path):
+    """Loads a model from the given path.
+
+    :param str path:
+    :return (Model, dict): The loaded model and its metadata
+    """
+    # Make sure the path is absolute
+    path = osp.abspath(path)
+
+    if not osp.exists(osp.join(path, "model.py")):
+        return
+
+    # Add it to the system path
+    sys.path.insert(0, path)
+
+    # Import and construct the model
+    from model import Model
+    m = Model(path)
+
+    # Load the metadata file
+    with open(osp.join(path, "model.yml"), "r") as fp:
+        info = yaml.safe_load(fp)
+    m.info = info
+    m.io_type = ModelIOTypes.get_io_type(m.info)
+
+    app_config.set_nested("model.name", info["name"])
+    app_config.set_nested("model.version", info["version"])
+
+    return m
+
+
+def init(config_path, model_path):
+    global logger, model, in_schema
+
+    app_config.load(config_path)
+
+    logger = get_logger_from_app_config(__name__)
+    logger.info("Initialised logger")
+
+    model = load_model(model_path)
+
+    if model is None:
+        logger.error("Unable to load model: %s", model_path)
+    else:
+        in_schema = get_request_schema(model.info["schema"]["input"])
+        logger.info("Initialised model: %s:%s", model.info["name"], model.info["version"])
+
+    return app
