@@ -46,15 +46,16 @@ $ tox
 
 ## Base image
 
-Model servers images are based on a `catwalk` base image, built from this repo, tagged `catwalk/base`.
+Model servers images are based on a `catwalk` base image, built from this repo, tagged `catwalk`.
 This image sets up the python environment including pre-installing `catwalk`.
 
 To build and push this image, use the following commands:
 
 ```bash
-$ export DOCKER_TAG=localhost:5000/catwalk/base:<version>
-$ docker build . -t ${DOCKER_TAG}
-$ docker push ${DOCKER_TAG}
+$ export CATWALK_VERSION=<version>
+$ export DOCKER_REGISTRY=localhost:5000
+$ export DOCKER_TAG=${DOCKER_REGISTRY}/catwalk:${CATWALK_VERSION}
+$ docker build . -t ${DOCKER_TAG} && docker push ${DOCKER_TAG}
 ```
 
 The <version> above should match the `catwalk` version.
@@ -227,6 +228,18 @@ $ catwalk serve --model-path /path/to/model
 ```
 
 Note that this command is the same as the development server, but without the `--debug` flag.
+
+#### Using environment variables in production
+
+The production-ready server can use environment variables to set arguments such as model path, config path and server port.
+Setting these will override anything passed as a CLI argument.
+
+```bash
+$ export MODEL_PATH=/path/to/env/model
+$ export SERVER_CONFIG=/path/to/env/conf/application.yml
+$ export SERVER_PORT=<some port number>
+$ catwalk serve
+```
 
 ### Server configuration
 

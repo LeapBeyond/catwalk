@@ -47,7 +47,7 @@ class TestImage(unittest.TestCase):
         self.registry = args.docker_registry
         self.namespace = args.docker_namespace
         model_tag = get_docker_tag(meta)
-        self.tag = "model-server/{}:{}".format(model_tag, meta["version"])
+        self.tag = "{}:{}".format(model_tag, meta["version"])
 
         app_config.load(args.config)
         ssl_enabled = app_config.get_nested("server.ssl.enabled", False)

@@ -41,10 +41,10 @@ def sigterm_handler(nginx_pid, gunicorn_pid):
 
 
 def start_nginx(args):
-    app_config_path = os.environ.get("SERVER_CONFIG", "/usr/src/app/conf/application.yml")
+    model_path = osp.abspath(os.environ.get("MODEL_PATH", args.model_path))
+
+    app_config_path = os.environ.get("SERVER_CONFIG", args.config)
     app_config.load(app_config_path)
-    # os.environ["MODEL_PATH"] = args.model_path
-    model_path = osp.abspath(os.environ.get("MODEL_PATH", "/usr/src/app/model"))
 
     logger = get_logger_from_app_config(__name__)
 
@@ -67,7 +67,7 @@ def start_nginx(args):
     kwargs = {
         "config": app_config_path,
         "model_path": model_path,
-        "port": os.environ.get("SERVER_PORT", 8888)
+        "port": os.environ.get("SERVER_PORT", args.port)
     }
     if ssl_enabled:
         kwargs.update({"ssl_cert_path": cert_path, "ssl_key_path": key_path})

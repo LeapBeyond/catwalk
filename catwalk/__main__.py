@@ -1,5 +1,4 @@
 import argparse
-import os.path as osp
 import sys
 import unittest
 
@@ -49,10 +48,9 @@ commands = {
 
 
 def main() -> int:
-    """The main entry point for p14n_e2e.
+    """The main entry point for catwalk.
     :return int: a status code
     """
-    basedir, file = osp.split(osp.abspath(__file__))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("command", default="help", help="The command to run")
@@ -60,7 +58,7 @@ def main() -> int:
                         help="Specifies the path to the application's configuration.")
     parser.add_argument("--debug", "-d", action="store_true",
                         help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
-    parser.add_argument("--model-path", "-m", default=osp.abspath(osp.join(basedir, "..", "example_models", "rng")), type=str,
+    parser.add_argument("--model-path", "-m", default=".", type=str,
                         help="Specifies the path to the model directory we're serving")
     parser.add_argument("--port", "-p", default=8888, type=int,
                         help="Specifies the port Flask will listen to")
