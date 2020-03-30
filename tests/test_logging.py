@@ -5,7 +5,7 @@ from catwalk.helpers.configuration import app_config
 from catwalk.helpers.logging import get_logger_from_app_config
 
 
-class TestKafkaHandler(unittest.TestCase):
+class TestLoggingHandler(unittest.TestCase):
 
     def setUp(self):
         super().setUp()

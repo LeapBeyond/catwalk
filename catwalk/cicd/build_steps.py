@@ -50,7 +50,7 @@ def build_prep(model_path=".", server_config=None, server_port=9090, docker_regi
         print("Wrote " + f)
 
 
-def build(model_path=".", docker_registry="localhost:5000", no_cache=False):
+def build(model_path=".", docker_registry="localhost:5000", no_cache=False):  # pragma: no cover
     """Builds the model into a Dockerised model server image."""
     model_path = osp.abspath(model_path)
     model_tag, model_version = get_model_tag_and_version(model_path)

@@ -6,7 +6,7 @@ from .configuration import app_config
 
 def get_logger_from_app_config(name="__main__"):
     """Creates a logger from the config specified in the yaml file.
-    Sets the correct logging level and adds a Kafka Handler if necessary.
+    Sets the correct logging level and adds a formatter.
 
     :param str name: the name of the logger.
     :return: Logger
@@ -25,7 +25,7 @@ def add_default_formatter(logger, fmt="[%(asctime)s] %(levelname)s in %(module)s
     """Adds a default Formatter to a Logger object
 
     :param Logger logger: the Logger instance to add the StreamHandler to.
-    :param str fmt: the format of the loffer messages (see logging.Formatter).
+    :param str fmt: the format of the logger messages (see logging.Formatter).
     """
 
     if len(logger.handlers) == 0:
