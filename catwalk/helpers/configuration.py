@@ -16,7 +16,10 @@ class ApplicationConfig(dict):
         :param str path: The path to the config file.
         :return dict: The loaded config.
         """
-        if path is None or not osp.exists(path):
+        if not path:
+            return self
+
+        if not osp.exists(path):
             logger.warning("Config path %s does not exist", path)
             return self
 

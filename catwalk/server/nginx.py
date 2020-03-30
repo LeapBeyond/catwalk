@@ -45,6 +45,8 @@ def start_nginx(args):
     model_path = osp.abspath(os.environ.get("MODEL_PATH", args.model_path))
 
     app_config_path = os.environ.get("SERVER_CONFIG", args.config)
+    if app_config_path.lower() == "false":
+        app_config_path = None
     app_config.load(app_config_path)
 
     logger = get_logger_from_app_config(__name__)
@@ -66,7 +68,7 @@ def start_nginx(args):
 
     # render the config files
     kwargs = {
-        "config": app_config_path,
+        "config": app_config_path if app_config_path else "",
         "model_path": model_path,
         "port": os.environ.get("SERVER_PORT", args.port)
     }

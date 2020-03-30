@@ -13,7 +13,7 @@ COPY . catwalk/
 RUN cd catwalk && pip install --upgrade pip && pip install --no-cache-dir .
 
 ENV MODEL_PATH catwalk/example_models/rng
-ENV SERVER_CONFIG=conf/application.yml
+ENV SERVER_CONFIG=false
 ENV SERVER_PORT=9090
 
 CMD ["catwalk", "serve"]
