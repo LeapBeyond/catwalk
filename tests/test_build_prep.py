@@ -22,7 +22,7 @@ class TestBuildPrep(unittest.TestCase):
     def test_build_prep(self) -> None:
         args = argparse.Namespace(
             model_path=self.model_path,
-            port=8888,
+            port=9090,
             docker_registry="localhost:5000",
             docker_namespace="models"
         )

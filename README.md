@@ -180,7 +180,7 @@ E.g. for the RNG example:
 $ curl -v \
     -d "{ \"correlation_id\": \"1A\", \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
     -H "Content-Type: application/json" \
-    http://localhost:8888/predict
+    http://localhost:9090/predict
 ```
 
 You can optionally specify the model to run in the request.
@@ -191,7 +191,7 @@ E.g. for the RNG example:
 $ curl -v \
     -d "{ \"correlation_id\": \"1A\", \"model\": { \"name\": \"RNGModel\", \"version\": \"0.0.1\"}, \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
     -H "Content-Type: application/json" \
-    http://localhost:8888/predict
+    http://localhost:9090/predict
 ```
 
 Models also have `/status` and `/info` end points.
@@ -210,7 +210,7 @@ E.g. for the RNG example:
 $ curl -v \
     -d "{ \"correlation_id\": \"1A\", \"extra_data\": { \"foo\": \"bar\" }, \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
     -H "Content-Type: application/json" \
-    http://localhost:8888/predict
+    http://localhost:9090/predict
 ```
 
 ### How the server is productionised

@@ -60,7 +60,7 @@ def main() -> int:
                         help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
     parser.add_argument("--model-path", "-m", default=".", type=str,
                         help="Specifies the path to the model directory we're serving")
-    parser.add_argument("--port", "-p", default=8888, type=int,
+    parser.add_argument("--port", "-p", default=9090, type=int,
                         help="Specifies the port Flask will listen to")
     parser.add_argument("--server-host", "-s", default="localhost", type=str,
                         help="Specifies the hostname of the server.")
