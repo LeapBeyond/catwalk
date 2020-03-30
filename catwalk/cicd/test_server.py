@@ -47,15 +47,15 @@ class TestServer(BaseTest):
                           "Response bodyto /status should be empty")
 
     def _test_info(self):
-        self.logger.info("Testing HTTP GET /")
+        self.logger.info("Testing HTTP GET /info")
 
-        response = self.client.get("/")
+        response = self.client.get("/info")
 
         self.assertEqual(response.status_code, 200,
-                         "Response code to / should be 200. Got code {}".format(response.status_code))
+                         "Response code to /info should be 200. Got code {}".format(response.status_code))
 
         self.assertTrue(response.is_json,
-                        "Response to / should be json object")
+                        "Response to /info should be json object")
 
         info_schema = get_schema("info_response")
         data = response.get_json()

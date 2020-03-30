@@ -113,7 +113,7 @@ class TestImage(unittest.TestCase):
         while response is None:
             self.logger.info("Attempting {} request...".format(self.http))
             try:
-                response = request.urlopen("{}://{}:{}".format(self.http, self.server_host, self.port), context=self.ssl_context)
+                response = request.urlopen("{}://{}:{}/info".format(self.http, self.server_host, self.port), context=self.ssl_context)
             except RemoteDisconnected as err:
                 time.sleep(1)
                 t += 1
@@ -121,17 +121,17 @@ class TestImage(unittest.TestCase):
                 if t > time_limit:
                     self.fail("Container not responsive after {} seconds".format(time_limit))
 
-        self.logger.info("Testing {} GET /".format(self.http))
+        self.logger.info("Testing {} GET /info".format(self.http))
 
         self.assertEqual(response.status, 200,
-                         "Response code to / should be 200. Got code {}".format(response.status))
+                         "Response code to /info should be 200. Got code {}".format(response.status))
 
         data = response.read().decode("utf-8")
         self.assertGreater(len(data), 0,
-                           "Response to / should not be empty")
+                           "Response to /info should not be empty")
         data = json.loads(data)
         self.assertIsInstance(data, dict,
-                              "Response to / should be json object")
+                              "Response to /info should be json object")
 
         info_schema = get_schema("info_response")
 
