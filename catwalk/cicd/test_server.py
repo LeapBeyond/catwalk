@@ -1,6 +1,4 @@
-import sys
 import unittest
-import logging
 import yaml
 from os import path as osp
 
@@ -166,3 +164,10 @@ class TestServer(BaseTest):
         request_data["model"]["name"] = model_info["name"]
         request_data["model"]["version"] = "This should fail"
         test_404()
+
+
+def test_server(model_path="."):
+    suite = unittest.TestSuite()
+    suite.addTest(TestServer(model_path))
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return result.wasSuccessful()

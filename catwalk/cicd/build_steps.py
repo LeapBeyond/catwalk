@@ -18,17 +18,22 @@ def get_model_tag_and_version(model_path) -> (str, str):
     return model_tag, model_version
 
 
-def build_prep(args):
+def build_prep(model_path=".", server_config=None, server_port=9090, docker_registry="localhost:5000"):
     """Prepares the model to be Dockerised by generating a dockerimage"""
-    args.model_path = osp.abspath(args.model_path)
-    model_tag, model_version = get_model_tag_and_version(args.model_path)
+    model_path = osp.abspath(model_path)
+    model_tag, model_version = get_model_tag_and_version(model_path)
 
-    kwargs = vars(args)
-    kwargs["catwalk_version"] = catwalk_version
-    kwargs["model_tag"] = model_tag
-    kwargs["model_version"] = model_version
-    if kwargs.get("config", None) is None:
-        kwargs["config"] = "/config/application.yml"
+    if server_config is None:
+        server_config = "false"
+
+    kwargs = {
+        "docker_registry": docker_registry,
+        "catwalk_version": catwalk_version,
+        "model_tag": model_tag,
+        "model_version": model_version,
+        "server_config": server_config,
+        "server_port": server_port
+    }
 
     files_to_create = ["Dockerfile", ".dockerignore"]
     env = Environment(loader=PackageLoader("catwalk", "templates"))
@@ -39,31 +44,26 @@ def build_prep(args):
             template_file = template_file[1:]
         template = env.get_template(template_file)
         rendered = template.render(**kwargs)
-        out_path = osp.join(args.model_path, f)
+        out_path = osp.join(model_path, f)
         with open(out_path, "w") as fp:
             fp.write(rendered)
         print("Wrote " + f)
 
-    return 0
 
+def build(model_path=".", docker_registry="localhost:5000", no_cache=False):
+    """Builds the model into a Dockerised model server image."""
+    model_path = osp.abspath(model_path)
+    model_tag, model_version = get_model_tag_and_version(model_path)
 
-def build(args):
-    """Builds the model into a Dockerised model server image.
-
-    :param Namespace args: The cli args.
-    """
-    args.model_path = osp.abspath(args.model_path)
-    model_tag, model_version = get_model_tag_and_version(args.model_path)
-
-    model_path = osp.abspath(args.model_path)
+    model_path = osp.abspath(model_path)
 
     # Setup
-    image_name = "/".join([args.docker_registry, args.docker_namespace, model_tag])
+    image_name = "/".join([docker_registry, model_tag])
 
     # Perform the docker build
     cmd = ["docker", "build", model_path]
     cmd += ["-t", image_name+":"+model_version]
-    if args.no_cache:
+    if no_cache:
         cmd += ["--no-cache"]
 
     print(" ".join(cmd))

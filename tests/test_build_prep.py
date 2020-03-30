@@ -20,17 +20,14 @@ class TestBuildPrep(unittest.TestCase):
         shutil.rmtree(self.model_path)
 
     def test_build_prep(self) -> None:
-        args = argparse.Namespace(
-            model_path=self.model_path,
-            port=9090,
-            docker_registry="localhost:5000",
-            docker_namespace="models"
-        )
+        kwargs = {
+            "model_path": self.model_path,
+            "server_config": None,
+            "server_port": 9090,
+            "docker_registry": "localhost:5000"
+        }
 
-        r = build_prep(args)
-
-        # Check return code
-        self.assertEqual(r, 0, "build_prep failed with code {}".format(r))
+        build_prep(**kwargs)
 
         # check files were created correctly
         created_files = [

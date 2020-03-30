@@ -22,14 +22,18 @@ from ..utils import get_docker_tag
 
 
 class TestImage(unittest.TestCase):
-    def __init__(self, cli_args, *args, **kwargs):
+    def __init__(self, model_path=".", server_config=None, server_port=9090,
+                 docker_registry="localhost:5000", server_host="localhost", fail_if_port_in_use=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.args = cli_args
+        self.model_path = model_path
+        self.server_config = server_config
+        self.server_port = server_port
+        self.docker_registry = docker_registry
+        self.server_host = server_host
+        self.fail_if_port_in_use = fail_if_port_in_use
 
     def setUp(self):
         super().setUp()
-
-        args = self.args
 
         # Create a logger
         logging.basicConfig(stream=sys.stderr)
@@ -37,19 +41,15 @@ class TestImage(unittest.TestCase):
         self.logger.setLevel(logging.INFO)
 
         # Load the model metadata
-        self.model_path = osp.abspath(args.model_path)
+        self.model_path = osp.abspath(self.model_path)
         meta_path = osp.join(self.model_path, "model.yml")
         with open(meta_path, "r") as fp:
             meta = yaml.safe_load(fp)
 
-        self.server_host = args.server_host
-        self.port = args.port
-        self.registry = args.docker_registry
-        self.namespace = args.docker_namespace
         model_tag = get_docker_tag(meta)
         self.tag = "{}:{}".format(model_tag, meta["version"])
 
-        app_config.load(args.config)
+        app_config.load(self.server_config)
         ssl_enabled = app_config.get_nested("server.ssl.enabled", False)
 
         self.http = "http"
@@ -64,9 +64,9 @@ class TestImage(unittest.TestCase):
         client = docker.from_env()
 
         # Check for existing container(s) using the specified port
-        containers = client.containers.list(filters={"expose": self.port})
+        containers = client.containers.list(filters={"expose": self.server_port})
         if len(containers) > 0:
-            if args.fail_if_port_in_use:
+            if self.fail_if_port_in_use:
                 self.fail("Port in use by the following containers: " + str(containers))
 
             # Kill any that we find
@@ -75,13 +75,13 @@ class TestImage(unittest.TestCase):
 
         # Spin up our container
         volumes = []
-        if args.config is not None:
-            volumes.append("{}:/opt/app-root/src/conf:ro".format(osp.abspath(args.config)))
+        if self.server_config is not None:
+            volumes.append("{}:/opt/app-root/src/conf:ro".format(osp.abspath(self.server_config)))
         if ssl_enabled:
-            volumes.append("{}:/certs:ro".format(osp.abspath(osp.join(args.config, "certs"))))
+            volumes.append("{}:/certs:ro".format(osp.abspath(osp.join(self.server_config, "certs"))))
 
-        self.container = client.containers.run("/".join([self.registry, self.namespace, self.tag]),
-                                               ports={str(self.port)+"/tcp": self.port},
+        self.container = client.containers.run("/".join([self.docker_registry, self.tag]),
+                                               ports={str(self.server_port)+"/tcp": self.server_port},
                                                volumes=volumes,
                                                user=random.randrange(10000, 20000),
                                                detach=True)
@@ -113,7 +113,7 @@ class TestImage(unittest.TestCase):
         while response is None:
             self.logger.info("Attempting {} request...".format(self.http))
             try:
-                response = request.urlopen("{}://{}:{}/info".format(self.http, self.server_host, self.port), context=self.ssl_context)
+                response = request.urlopen("{}://{}:{}/info".format(self.http, self.server_host, self.server_port), context=self.ssl_context)
             except RemoteDisconnected as err:
                 time.sleep(1)
                 t += 1
@@ -169,7 +169,7 @@ class TestImage(unittest.TestCase):
         }
 
         # Make the request
-        req = request.Request("{}://{}:{}/predict".format(self.http, self.server_host, self.port))
+        req = request.Request("{}://{}:{}/predict".format(self.http, self.server_host, self.server_port))
         req.add_header("Content-Type", "application/json; charset=utf-8")
         post_data = json.dumps(request_data).encode("utf-8")
         req.add_header("Content-Length", len(post_data))
@@ -195,7 +195,7 @@ class TestImage(unittest.TestCase):
 
         # Test the 400 response
 
-        req = request.Request("{}://{}:{}/predict".format(self.http, self.server_host, self.port))
+        req = request.Request("{}://{}:{}/predict".format(self.http, self.server_host, self.server_port))
         req.add_header('Content-Type', 'application/json; charset=utf-8')
         post_data = "This should fail".encode("utf-8")
         req.add_header("Content-Length", len(post_data))
@@ -219,3 +219,10 @@ class TestImage(unittest.TestCase):
                 self.fail("Response to /predict should be json")
 
         self.assertTrue(got_error)
+
+
+def test_image(**kwargs):
+    suite = unittest.TestSuite()
+    suite.addTest(TestImage(**kwargs))
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return result.wasSuccessful()

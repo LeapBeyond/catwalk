@@ -160,7 +160,7 @@ Note that a model may have it's own set of requirements, which will be installed
 
 ```bash
 $ cd /path/to/your/model 
-$ catwalk test_model --model-path .
+$ catwalk test-model --model-path .
 ```
 
 ## Running the wrapper server
@@ -271,7 +271,7 @@ Check the help in the script for all the arguments, including docker registry an
 For integration in a CD pipeline, the image is built in two steps:
 
 ```bash
-$ catwalk build_prep --model-path /path/to/your/model
+$ catwalk build-prep --model-path /path/to/your/model
 $ catwalk build --model-path /path/to/your/model
 ```
 
@@ -279,21 +279,21 @@ The first step creates the Dockerfile for the model to be wrapped, whereas the s
 
 ### Testing the built image
 
-One you have a model wrapped in a server image, you can test it locally with the `test_image` command.
+One you have a model wrapped in a server image, you can test it locally with the `test-image` command.
 
 ```bash
-$ catwalk test_image --model-path /path/to/your/model
+$ catwalk test-image --model-path /path/to/your/model
 ```
 
 ## CI/CD integration
 
 To integrate catwalk into a CI/CD pipeline, configure the following steps:
 
-1. Test model (`catwalk test_model --model-path /path/to/model`)
-1. Test server (`catwalk test_server --model-path /path/to/model`)
-1. Build prep (`catwalk build_prep --model-path /path/to/model`)
+1. Test model (`catwalk test-model --model-path /path/to/model`)
+1. Test server (`catwalk test-server --model-path /path/to/model`)
+1. Build prep (`catwalk build-prep --model-path /path/to/model`)
 1. Build (`catwalk build --model-path /path/to/model`)
-1. (optional) Test image (`catwalk test_image --model-path /path/to/model`)
+1. (optional) Test image (`catwalk test-image --model-path /path/to/model`)
 
 N.B. In order for the CI/CD pipeline to function correctly, the build machine will need:
 - python 3.7 and pip;

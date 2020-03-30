@@ -1,5 +1,6 @@
 import sys
 import os.path as osp
+import unittest
 
 from schema import SchemaError
 import yaml
@@ -174,3 +175,10 @@ class TestModel(BaseTest):
             self.logger.error(r)
             self.logger.error(y)
             raise e
+
+
+def test_model(model_path="."):
+    suite = unittest.TestSuite()
+    suite.addTest(TestModel(model_path))
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return result.wasSuccessful()

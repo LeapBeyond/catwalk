@@ -1,91 +1,85 @@
-import argparse
-import sys
-import unittest
+import click
 
-from catwalk.cicd import TestModel, TestServer, TestImage
-from catwalk.cicd import build_prep, build
-from catwalk.server import app, nginx
+from catwalk.cicd import test_model, test_server, build_prep, build, test_image
+from catwalk.server import serve
 
 
-def serve(args):
-    if args.debug:
-        # serve the model in debug mode
-        app.init(args.config, args.model_path)
-        app.app.run(host="0.0.0.0", port=args.port)
-    else:
-        # serve the model in production mode
-        nginx.start_nginx(args)
-
-    return 0
+@click.group()
+@click.version_option(message="%(prog)s %(version)s")
+def main():
+    pass
 
 
-def test_model(args):
-    suite = unittest.TestSuite()
-    suite.addTest(TestModel(args.model_path))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    return 0 if result.wasSuccessful() else 1
+def model_options(f):
+    f = click.option("--model-path", "-m", default=".", envvar="MODEL_PATH",
+                     help="The path to the model directory we're working with")(f)
+    return f
 
 
-def test_server(args):
-    suite = unittest.TestSuite()
-    suite.addTest(TestServer(args.model_path))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    return 0 if result.wasSuccessful() else 1
+def server_options(f):
+    f = click.option("--server-config", "-c", default=None, envvar="SERVER_OPTIONS",
+                     help="Specifies the path to the server's configuration.")(f)
+    f = click.option("--server-port", "-p", default=9090, envvar="SERVER+PORT",
+                     help="Specifies the port Flask will listen on.")(f)
+    return f
 
 
-def test_image(args):
-    suite = unittest.TestSuite()
-    suite.addTest(TestImage(args))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    return 0 if result.wasSuccessful() else 1
+def docker_options(f):
+    f = click.option("--docker-registry", "-r", default="localhost:5000", envvar="DOCKER_REGISTRY",
+                     help="Specifies the Docker repo this image is tagged against.")(f)
+    return f
 
 
-commands = {
-    "serve": serve,
-    "test_model": test_model,
-    "test_server": test_server,
-    "build_prep": build_prep,
-    "build": build,
-    "test_image": test_image
-}
+@main.command(name="serve")
+@model_options
+@server_options
+@click.option("--debug", "-d", is_flag=True,
+              help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
+def cli_serve(**kwargs):
+    return serve(**kwargs)
 
 
-def main() -> int:
-    """The main entry point for catwalk.
-    :return int: a status code
-    """
+@main.command(name="test-model")
+@model_options
+def cli_test_model(**kwargs):
+    return 0 if test_model(**kwargs) else 1
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("command", default="help", help="The command to run")
-    parser.add_argument("--config", "-c", type=str,
-                        help="Specifies the path to the application's configuration.")
-    parser.add_argument("--debug", "-d", action="store_true",
-                        help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
-    parser.add_argument("--model-path", "-m", default=".", type=str,
-                        help="Specifies the path to the model directory we're serving")
-    parser.add_argument("--port", "-p", default=9090, type=int,
-                        help="Specifies the port Flask will listen to")
-    parser.add_argument("--server-host", "-s", default="localhost", type=str,
-                        help="Specifies the hostname of the server.")
-    parser.add_argument("--docker-registry", "-r", default="localhost:5000", type=str,
-                        help="Specifies the Docker repo this image is tagged against.")
-    parser.add_argument("--docker-namespace", "-n", default="catwalk/models", type=str,
-                        help="Specifies the namespace this image is tagged within.")
-    parser.add_argument("--fail-if-port-in-use", "-f", action="store_true",
-                        help="If specified, the test will fail is the specified port is already in use. "
-                             "Default behaviour is to kill all containers using the port.")
-    parser.add_argument("--no-cache", "-C", action="store_true",
-                        help="If specified, docker will not use the build cache.")
 
-    args = parser.parse_args()
+@main.command(name="test-server")
+@model_options
+def cli_test_server(**kwargs):
+    return 0 if test_server(**kwargs) else 1
 
-    command = commands.get(args.command, None)
-    if command is not None:
-        return command(args)
 
-    print("Command not found: {}".format(args.command), file=sys.stderr)
-    return 1
+@main.command(name="build-prep")
+@model_options
+@server_options
+@docker_options
+def cli_build_prep(**kwargs):
+    return 0 if build_prep(**kwargs) else 1
+
+
+@main.command(name="build")
+@model_options
+@docker_options
+@click.option("--no-cache", "-C", is_flag=True,
+              help="If specified, docker will not use the build cache.")
+def cli_build(**kwargs):
+    return build(**kwargs)
+
+
+@main.command(name="test-image")
+@model_options
+@server_options
+@docker_options
+@click.option("--server-host", "-s", default="localhost",
+              help="Specifies the hostname of the server to test against.")
+@click.option("--fail-if-port-in-use", "-f", is_flag=True,
+              help="If specified, the test will fail is the specified port is already in use. "
+                   "Default behaviour is to kill all containers using the port.")
+def cli_test_image(**kwargs):
+    return 0 if test_image(**kwargs) else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
