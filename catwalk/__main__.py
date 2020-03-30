@@ -22,19 +22,22 @@ def serve(args):
 def test_model(args):
     suite = unittest.TestSuite()
     suite.addTest(TestModel(args.model_path))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return 0 if result.wasSuccessful() else 1
 
 
 def test_server(args):
     suite = unittest.TestSuite()
     suite.addTest(TestServer(args.model_path))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return 0 if result.wasSuccessful() else 1
 
 
 def test_image(args):
     suite = unittest.TestSuite()
     suite.addTest(TestImage(args))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
+    return 0 if result.wasSuccessful() else 1
 
 
 commands = {

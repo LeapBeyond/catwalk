@@ -62,8 +62,8 @@ def api_error(message, status_code=500, request_data=None) -> Response:
     return json_response(response, status_code)
 
 
-@app.route("/")
-def index() -> Response:
+@app.route("/info")
+def info() -> Response:
     """The info end-point, returns metadata about the loaded model.
     :return Response:
     """

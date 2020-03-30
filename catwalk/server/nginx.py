@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+import logging
 
 from jinja2 import Environment, PackageLoader
 
@@ -93,7 +94,8 @@ def start_nginx(args):
     # link the log streams to stdout/err so they will be logged to the container logs
     Path(access_log).touch()
     Path(error_log).touch()
-    subprocess.call(["ln", "-sf", "/dev/stdout", access_log])
+    if logger.level <= logging.DEBUG:
+        subprocess.call(["ln", "-sf", "/dev/stdout", access_log])
     subprocess.call(["ln", "-sf", "/dev/stderr", error_log])
 
     nginx = subprocess.Popen(["nginx", "-c", osp.join(nginx_path, nginx_conf)])
