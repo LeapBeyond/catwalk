@@ -1,0 +1,24 @@
+name: "catwalk-sklearn-tutorial"
+version: "0.1.0"
+
+contact:
+  name: "Andy Elmsley"
+  email: "andy.elmsley@leapbeyond.ai"
+
+schema:
+  input:
+    type: object
+    properties:
+        X:
+            type: array
+            items:
+                type: array
+                items:
+                    type: number
+  output:
+    type: object
+    properties:
+        y:
+            type: array
+            items:
+                type: number
