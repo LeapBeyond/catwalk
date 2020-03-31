@@ -1,6 +1,5 @@
 import json
 import yaml
-import sys
 import logging
 import copy
 import os.path as osp
@@ -9,13 +8,7 @@ from flask import Flask, Response, request
 from werkzeug.exceptions import BadRequest
 from schema import SchemaError
 
-# pandas must be installed by a model's requirements.txt, to avoid binary incompatabilities between versions
-# this will succeed if the model has the requirement (this is test in the test_model script)
-try:
-    import pandas as pd
-except ImportError as err:
-    pass
-
+from ..utils import get_model_class
 from ..helpers.configuration import app_config
 from ..helpers.logging import get_logger_from_app_config
 
@@ -143,14 +136,11 @@ def load_model(path):
     # Make sure the path is absolute
     path = osp.abspath(path)
 
-    if not osp.exists(osp.join(path, "model.py")):
+    # Import and construct the model
+    Model = get_model_class(path)
+    if Model is None:
         return
 
-    # Add it to the system path
-    sys.path.insert(0, path)
-
-    # Import and construct the model
-    from model import Model
     m = Model(path)
 
     # Load the metadata file
@@ -161,6 +151,16 @@ def load_model(path):
 
     app_config.set_nested("model.name", info["name"])
     app_config.set_nested("model.version", info["version"])
+
+    # pandas must be installed by a model's requirements.txt, to avoid binary incompatabilities between versions
+    # this will succeed if the model has the requirement (this is test in the test_model script)
+    if m.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
+        global pd
+        try:
+            import pandas
+            pd = pandas
+        except ImportError as err:
+            logger.error("Unable to import pandas. Was it in your requirements.txt?")
 
     return m
 

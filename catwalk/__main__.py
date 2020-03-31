@@ -19,7 +19,7 @@ def model_options(f):
 def server_options(f):
     f = click.option("--server-config", "-c", default=None, envvar="SERVER_OPTIONS",
                      help="Specifies the path to the server's configuration.")(f)
-    f = click.option("--server-port", "-p", default=9090, envvar="SERVER+PORT",
+    f = click.option("--server-port", "-p", default=9090, envvar="SERVER_PORT",
                      help="Specifies the port Flask will listen on.")(f)
     return f
 
@@ -36,7 +36,7 @@ def docker_options(f):
 @click.option("--debug", "-d", is_flag=True,
               help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
 def cli_serve(**kwargs):
-    return serve(**kwargs)
+    serve(**kwargs)
 
 
 @main.command(name="test-model")
@@ -56,7 +56,7 @@ def cli_test_server(**kwargs):
 @server_options
 @docker_options
 def cli_build_prep(**kwargs):
-    return 0 if build_prep(**kwargs) else 1
+    build_prep(**kwargs)
 
 
 @main.command(name="build")

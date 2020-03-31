@@ -9,5 +9,3 @@ def serve(model_path=".", server_config=None, server_port=9090, debug=False):
     else:
         # serve the model in production mode
         nginx.start_nginx(server_config, model_path, server_port)
-
-    return 0

@@ -1,10 +1,12 @@
 import sys
 import os.path as osp
 import unittest
+import importlib
 
 from schema import SchemaError
 import yaml
 
+from ..utils import get_model_class
 from ..validation.schema import to_schema, get_schema
 from ..validation.model import ModelIOTypes
 from .base_test import BaseTest
@@ -79,14 +81,12 @@ class TestModel(BaseTest):
 
         # Test import (via sys path)
         self.logger.info("Test model import")
-        sys.path.append(self.model_path)
-        try:
-            from model import Model
-        except Exception as err:
-            self.logger.error("from model import Model failed")
-            self.fail(err)
+        Model = get_model_class(self.model_path)
+
+        self.assertIsNotNone(Model, "Model class not found")
 
         self.logger.info("Test model construction")
+
         # Test interface
         m = Model(self.model_path)
         self.assertIsInstance(m, Model)

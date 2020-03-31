@@ -18,7 +18,7 @@ from ..helpers.configuration import app_config
 
 from ..validation.schema import get_schema, get_response_schema
 from ..validation.model import ModelIOTypes
-from ..utils import get_docker_tag
+from ..utils import get_docker_tag, get_model_class
 
 
 class TestImage(unittest.TestCase):
@@ -146,8 +146,9 @@ class TestImage(unittest.TestCase):
         self.logger.info("Testing {} POST /predict".format(self.http))
 
         # Load the test data
-        sys.path.append(self.model_path)
-        from model import Model
+        Model = get_model_class(self.model_path)
+        self.assertIsNotNone(Model, "Could not load Model class")
+
         m = Model(self.model_path)
         X_test, y_test = m.load_test_data(self.model_path)
 
