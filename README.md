@@ -99,7 +99,7 @@ A `model.py` file must exist, implementing a single class called `Model`, that f
 
 ```python
 class Model(object):
-    """The Model knows how to load itself, prides test data and runs with `Model::predict`.
+    """The Model knows how to load itself, provides test data and runs with `Model::predict`.
     """
 
     def __init__(self, path="."):
