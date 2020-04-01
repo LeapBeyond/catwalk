@@ -102,10 +102,12 @@ class TestServer(BaseTest):
             return response_data
 
         request_data = {
-            "correlation_id": "1A",
             "input": X_test,
         }
         response_data = test_request(request_data)
+
+        self.assertIn("correlation_id", response_data, "correlation_id not returned")
+
         self.assertIn("model", response_data, "model not returned")
 
         model_data = {
@@ -115,9 +117,16 @@ class TestServer(BaseTest):
         self.assertDictEqual(response_data["model"], model_data,
                              "model returned but not a match")
 
+        # Test with specified correlation_id
+        request_data["correlation_id"] = "1A"
+        response_data = test_request(request_data)
+        self.assertEqual(response_data["correlation_id"], "1A", "correlation_id returned did not match")
+
         # Test with a specified model
         request_data["model"] = model_data
-        test_request(request_data)
+        response_data = test_request(request_data)
+        self.assertDictEqual(response_data["model"], model_data,
+                             "model returned did not match")
 
         # Test with extra_data
         request_data["extra_data"] = {

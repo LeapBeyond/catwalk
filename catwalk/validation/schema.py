@@ -80,6 +80,10 @@ SCHEMAS["request_shell"] = {
 SCHEMAS["response_shell"] = copy.deepcopy(SCHEMAS["request_shell"])
 SCHEMAS["response_shell"]["output"] = None
 
+# Make the correlation_id optional in the request
+SCHEMAS["request_shell"][Optional("correlation_id")] = SCHEMAS["request_shell"]["correlation_id"]
+del SCHEMAS["request_shell"]["correlation_id"]
+
 # Make the model optional in the request
 SCHEMAS["request_shell"][Optional("model")] = SCHEMAS["request_shell"]["model"]
 del SCHEMAS["request_shell"]["model"]

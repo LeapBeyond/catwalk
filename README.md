@@ -179,6 +179,18 @@ E.g. for the RNG example:
 
 ```bash
 $ curl -H "Content-Type: application/json" \
+    -d '{"input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
+    http://localhost:9090/predict
+```
+
+Note now the response includes the input and output data, along with the model that was run and a generated `correlation_id` (UUID).
+
+In production, the `correlation_id` helps with linking API calls together.
+You can optionally specify your own correlation_id in a request.
+E.g. for the RNG example:
+
+```bash
+$ curl -H "Content-Type: application/json" \
     -d '{"correlation_id": "1A", "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
@@ -189,7 +201,7 @@ E.g. for the RNG example:
 
 ```bash
 $ curl -H "Content-Type: application/json" \
-    -d '{"correlation_id": "1A", "model": {"name": "RNGModel", "version": "0.0.1"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
+    -d '{"model": {"name": "RNGModel", "version": "0.0.1"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
 
@@ -207,7 +219,7 @@ E.g. for the RNG example:
 
 ```bash
 $ curl -H "Content-Type: application/json" \
-    -d '{"correlation_id": "1A", "extra_data": {"foo": "bar"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
+    -d '{"extra_data": {"foo": "bar"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
 

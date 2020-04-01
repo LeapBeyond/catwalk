@@ -3,6 +3,7 @@ import yaml
 import logging
 import copy
 import os.path as osp
+from uuid import uuid4
 
 from flask import Flask, Response, request
 from werkzeug.exceptions import BadRequest
@@ -90,6 +91,9 @@ def predict() -> Response:
         in_schema.validate(data)
     except SchemaError as err:
         return api_error("Invalid POST data.", 400)
+
+    if "correlation_id" not in data:
+        data["correlation_id"] = str(uuid4())
 
     # Test to see if the model loaded matches the request
     if "model" in data:
