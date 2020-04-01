@@ -2,6 +2,9 @@
 
 `catwalk` is a model wrapping and serving platform.
 
+This README contains technical information about the python package.
+For User documentation, please refer to the [Wiki](https://github.com/LeapBeyond/catwalk/wiki/).
+
 ## Project overview
 
 `catwalk` provides a simple and automated method to wrap a generic python-based model into a production-
@@ -18,6 +21,15 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 - `example_models` - Contains example models for testing and starting points users can use as a basis for their own model.
 - `tests` - Contains the unit test suite for catwalk.
 - `tutorials` - Contains code for various catwalk tutorials.
+
+## Quick start
+
+1. Perform setup steps (below).
+2. Implement a `model.py` and `model.yml` following [the correct interface](https://github.com/LeapBeyond/catwalk/wiki/Models), or use one of the example models in `example_models`.
+3. Test your model with `catwalk test-model` and `catwalk test-server`.
+4. Serve your model with `catwalk serve --debug`.
+5. (Optional) Build a model server image with `catwalk build-prep` and `catwalk build`.
+6. (Optional) Test the built image with `catwalk test-image`.
 
 ## Setup
 
