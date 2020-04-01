@@ -35,7 +35,15 @@ def docker_options(f):
 @server_options
 @click.option("--debug", "-d", is_flag=True,
               help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
+@click.option("--test", "-t", is_flag=True, envvar="RUN_TESTS",
+              help="Specifies weather or not to run the model tests before starting up the server.")
 def cli_serve(**kwargs):
+    if kwargs["test"]:
+        for test in [test_model, test_server]:
+            result = test(kwargs["model_path"])
+            if not result:
+                return 1
+    del kwargs["test"]
     serve(**kwargs)
 
 
