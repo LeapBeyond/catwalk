@@ -41,13 +41,11 @@ def sigterm_handler(nginx_pid, gunicorn_pid):
     sys.exit(0)
 
 
-def start_nginx(config, model_path, port):
-    # TODO: Don't need the `os.environ.get` anymore - remove them (they are now in click)
-    # TODO: add defaults in the signature
-    model_path = osp.abspath(os.environ.get("MODEL_PATH", model_path))
+def start_nginx(config=None, model_path=".", port=9090):
+    model_path = osp.abspath(model_path)
 
-    app_config_path = os.environ.get("SERVER_CONFIG", config)
-    if app_config_path.lower() == "false":
+    app_config_path = config
+    if isinstance(app_config_path, str) and app_config_path.lower() == "false":
         app_config_path = None
     app_config.load(app_config_path)
 
@@ -72,7 +70,7 @@ def start_nginx(config, model_path, port):
     kwargs = {
         "config": app_config_path if app_config_path else "",
         "model_path": model_path,
-        "port": os.environ.get("SERVER_PORT", port)
+        "port": port
     }
     if ssl_enabled:
         kwargs.update({"ssl_cert_path": cert_path, "ssl_key_path": key_path})

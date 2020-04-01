@@ -17,7 +17,7 @@ def model_options(f):
 
 
 def server_options(f):
-    f = click.option("--server-config", "-c", default=None, envvar="SERVER_OPTIONS",
+    f = click.option("--server-config", "-c", default=None, envvar="SERVER_CONFIG",
                      help="Specifies the path to the server's configuration.")(f)
     f = click.option("--server-port", "-p", default=9090, envvar="SERVER_PORT",
                      help="Specifies the port Flask will listen on.")(f)
