@@ -187,7 +187,7 @@ class TestImage(unittest.TestCase):
                               "Response to /predict should be json object")
 
         # Validate against the output schema
-        out_schema = get_response_schema(model_info["schema"]["input"], model_info["schema"]["output"])
+        out_schema = get_response_schema(model_info["schema"]["input"], model_info["schema"]["output"], io_type)
 
         try:
             out_schema.validate(data)

@@ -112,8 +112,14 @@ class TestModel(BaseTest):
         self.logger.info("Test using the provided test data")
 
         # Create schemas from validation file
-        in_schema = to_schema(self.meta["schema"]["input"])
-        out_schema = to_schema(self.meta["schema"]["output"])
+        in_schema = self.meta["schema"]["input"]
+        if io_type == ModelIOTypes.PANDAS_DATA_FRAME and in_schema["type"] == "object":
+            in_schema = {"type": "array", "items": in_schema}
+        in_schema = to_schema(in_schema)
+        out_schema = self.meta["schema"]["output"]
+        if io_type == ModelIOTypes.PANDAS_DATA_FRAME and out_schema["type"] == "object":
+            out_schema = {"type": "array", "items": out_schema}
+        out_schema = to_schema(out_schema)
 
         # Validate model I/O
         if io_type == ModelIOTypes.PANDAS_DATA_FRAME or self.meta["schema"]["input"]["type"] == "array":

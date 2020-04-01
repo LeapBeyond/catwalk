@@ -16,7 +16,8 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 
 - `catwalk` - Contains the `catwalk` python module itself.
 - `example_models` - Contains example models for testing and starting points users can use as a basis for their own model.
-- `tests` - Contains some extra unit tests for the model.
+- `tests` - Contains the unit test suite for catwalk.
+- `tutorials` - Contains code for various catwalk tutorials.
 
 ## Setup
 
@@ -145,10 +146,10 @@ $ python model.py
 The pandas DataFrame is the go-to tool for many a pythonic Data Scientist.
 To add support for DataFrames in the `Model.predict()` method, specify `io_type: PANDAS_DATA_FRAME` in the model.yml.
 This will ensure that the X argument is a pre-constructed DataFrame.
-Note that you must return a DataFrame as well!
+Note that you must return a DataFrame from the `Model.predict()` method as well!
 
 Important points:
-- The model's IO schema should be written in "records" format (`[{column -> value}, … , {column -> value}]`).
+- The model's IO schema can either be in "records" format (`[{column -> value}, … , {column -> value}]`) or simplified to a single record (`{column -> value}`).
 - pandas must be installed by a model's requirements.txt, to avoid binary or API incompatibilities between versions.
 
 See `examples/dataframe` for an example.

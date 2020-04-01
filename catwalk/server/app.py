@@ -105,12 +105,24 @@ def predict() -> Response:
     logger.info("correlation_id: %s data validated.", data["correlation_id"])
 
     X = data["request"]
+
+    # PANDAS_DATA_FRAME mode supports receiving data as a dict OR a list
+    did_receive_dict = isinstance(data["request"], dict) or data["request"] is None
     if model.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
+        if did_receive_dict:
+            X = [X]
         X = pd.DataFrame.from_dict(X)
+
     r = model.predict(X)
 
     if model.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
         r = r.to_dict(orient="records")
+
+        # PANDAS_DATA_FRAME mode supports receiving data as a dict OR a list
+        # `to_dict(orient="records")` will always return a list, so if we received a dict, we want to convert the output
+        if did_receive_dict:
+            # return the last result if we received a dict
+            r = r[-1]
 
     # Save the result to the request object and return
     data["response"] = r
@@ -178,7 +190,7 @@ def init(config_path, model_path):
     if model is None:
         logger.error("Unable to load model: %s", model_path)
     else:
-        in_schema = get_request_schema(model.info["schema"]["input"])
+        in_schema = get_request_schema(model.info["schema"]["input"], model.io_type)
         logger.info("Initialised model: %s:%s", model.info["name"], model.info["version"])
 
     return app
