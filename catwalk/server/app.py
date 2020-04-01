@@ -187,7 +187,8 @@ def init(config_path, model_path):
     app_config.load(config_path)
 
     logger = get_logger_from_app_config(__name__)
-    logger.info("Initialised logger")
+    if config_path is not None and osp.exists(config_path):
+        logger.info("Loaded config: {}".format(config_path))
 
     model = load_model(model_path)
 

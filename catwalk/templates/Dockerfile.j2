@@ -6,5 +6,6 @@ RUN if [ -f "model/requirements.txt" ]; then cd model && pip install -r requirem
 ENV MODEL_PATH=model
 ENV SERVER_CONFIG={{ server_config }}
 ENV SERVER_PORT={{ server_port }}
+ENV RUN_TESTS=true
 
 CMD catwalk serve

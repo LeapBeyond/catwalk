@@ -30,6 +30,7 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 4. Serve your model with `catwalk serve --debug`.
 5. (Optional) Build a model server image with `catwalk build-prep` and `catwalk build`.
 6. (Optional) Test the built image with `catwalk test-image`.
+7. (Optional) Deploy with `catwalk deploy-prep` and `docker-compose up`.
 
 ## Setup
 

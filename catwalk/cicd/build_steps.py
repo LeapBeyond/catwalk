@@ -2,20 +2,9 @@ import os.path as osp
 import subprocess
 
 from jinja2 import Environment, PackageLoader
-import yaml
 
-from ..utils import get_docker_tag
+from ..utils import get_model_tag_and_version
 from .. import __version__ as catwalk_version
-
-
-def get_model_tag_and_version(model_path) -> (str, str):
-    # Load the model's metadata
-    meta_path = osp.join(model_path, "model.yml")
-    with open(meta_path, "r") as fp:
-        meta = yaml.safe_load(fp)
-    model_tag = get_docker_tag(meta)
-    model_version = meta["version"]
-    return model_tag, model_version
 
 
 def build_prep(model_path=".", server_config=None, server_port=9090, docker_registry="localhost:5000"):

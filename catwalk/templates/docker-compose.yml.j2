@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  model:
+    image: {{ image }}
+    ports:
+      - "{{ server_port }}:{{ server_port }}"
+    environment:
+      - SERVER_PORT="{{ server_port }}"
+      - MODEL_PATH=model
+      - SERVER_CONFIG={{ server_config }}
+      - SERVER_PORT={{ server_port }}
+      - RUN_TESTS=true
+{%- if has_volumes %}
+    volumes:
+{%- for vol in volumes %}
+      - {{ vol }}
+{%- endfor %}
+{% endif %}

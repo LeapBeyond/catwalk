@@ -7,4 +7,6 @@ __pycache__
 catwalk-venv
 example_models/*/Dockerfile
 example_models/*/.dockerignore
+example_models/*/docker-compose.yml
+example_models/**/config.yml
 .ipynb_checkpoints

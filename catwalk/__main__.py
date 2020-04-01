@@ -1,6 +1,6 @@
 import click
 
-from catwalk.cicd import test_model, test_server, build_prep, build, test_image
+from catwalk.cicd import test_model, test_server, build_prep, build, test_image, deploy_prep
 from catwalk.server import serve
 
 
@@ -87,6 +87,19 @@ def cli_build(**kwargs):
                    "Default behaviour is to kill all containers using the port.")
 def cli_test_image(**kwargs):
     return 0 if test_image(**kwargs) else 1
+
+
+@main.command(name="deploy-prep")
+@model_options
+@server_options
+@docker_options
+@click.option("--deploy-mode", "-d", default="compose", type=click.Choice(["compose"]),
+              help="The deploy mode controls where we are deploying to. For now, the only option is `compose`.")
+@click.option("--volumes", "-v", multiple=True,
+              help="Adds extra volume mounts to the deployed container.")
+def cli_deploy_prep(**kwargs):
+    kwargs["volumes"] = list(kwargs["volumes"])
+    deploy_prep(**kwargs)
 
 
 if __name__ == "__main__":

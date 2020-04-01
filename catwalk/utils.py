@@ -3,6 +3,8 @@ import os.path as osp
 import importlib.util as il_util
 import sys
 
+import yaml
+
 
 def get_docker_tag(model_meta) -> str:
     """Sanitise a model name in the yaml for safe use as a Docker tag.
@@ -39,3 +41,13 @@ def get_model_class(model_path=".", model_file_name="model.py", model_class_name
 
     if hasattr(model_module, model_class_name):
         return getattr(model_module, model_class_name)
+
+
+def get_model_tag_and_version(model_path) -> (str, str):
+    # Load the model's metadata
+    meta_path = osp.join(model_path, "model.yml")
+    with open(meta_path, "r") as fp:
+        meta = yaml.safe_load(fp)
+    model_tag = get_docker_tag(meta)
+    model_version = meta["version"]
+    return model_tag, model_version
