@@ -33,7 +33,7 @@ def json_response(response_data, status_code=200) -> Response:
     :return Response: the HTTP response object.
     """
     if status_code != 200:
-        logger.error("Returning code {} with message {}".format(status_code, response_data["response"]["message"]))
+        logger.error("Returning code {} with message {}".format(status_code, response_data["output"]["message"]))
 
     json_str = json.dumps(response_data)
     return Response(json_str, status_code, mimetype="application/json")
@@ -51,7 +51,7 @@ def api_error(message, status_code=500, request_data=None) -> Response:
         response = copy.deepcopy(request_data)
     else:
         response = {}
-    response["response"] = {"message": message}
+    response["output"] = {"message": message}
     return json_response(response, status_code)
 
 
@@ -104,10 +104,10 @@ def predict() -> Response:
     # All checks complete, run predict
     logger.info("correlation_id: %s data validated.", data["correlation_id"])
 
-    X = data["request"]
+    X = data["input"]
 
     # PANDAS_DATA_FRAME mode supports receiving data as a dict OR a list
-    did_receive_dict = isinstance(data["request"], dict) or data["request"] is None
+    did_receive_dict = isinstance(data["input"], dict) or data["input"] is None
     if model.io_type == ModelIOTypes.PANDAS_DATA_FRAME:
         if did_receive_dict:
             X = [X]
@@ -125,7 +125,7 @@ def predict() -> Response:
             r = r[-1]
 
     # Save the result to the request object and return
-    data["response"] = r
+    data["output"] = r
 
     logger.info("correlation_id: %s returning response.", data["correlation_id"])
 

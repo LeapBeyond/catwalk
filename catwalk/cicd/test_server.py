@@ -103,7 +103,7 @@ class TestServer(BaseTest):
 
         request_data = {
             "correlation_id": "1A",
-            "request": X_test,
+            "input": X_test,
         }
         response_data = test_request(request_data)
         self.assertIn("model", response_data, "model not returned")
@@ -139,7 +139,7 @@ class TestServer(BaseTest):
                         "Response to /predict with bad data should be json object")
 
         response_data = response.get_json()
-        self.assertIn("message", response_data["response"],
+        self.assertIn("message", response_data["output"],
                       "Response to /predict with bad data should include a message")
 
         # Test the 404 response
@@ -155,7 +155,7 @@ class TestServer(BaseTest):
                             "Response to /predict with wrong model should be json object")
 
             response_data = response.get_json()
-            self.assertIn("message", response_data["response"],
+            self.assertIn("message", response_data["output"],
                           "Response to /predict with wrong model should include a message")
 
         request_data["model"]["name"] = "This should fail"

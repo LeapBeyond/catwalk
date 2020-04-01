@@ -178,9 +178,8 @@ The `--debug` flag runs a Flask development server, which you can hit it with so
 E.g. for the RNG example:
 
 ```bash
-$ curl -v \
-    -d "{ \"correlation_id\": \"1A\", \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
-    -H "Content-Type: application/json" \
+$ curl -H "Content-Type: application/json" \
+    -d '{"correlation_id": "1A", "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
 
@@ -189,9 +188,8 @@ The server will return a 404 if that specific model and version is not loaded.
 E.g. for the RNG example:
 
 ```bash
-$ curl -v \
-    -d "{ \"correlation_id\": \"1A\", \"model\": { \"name\": \"RNGModel\", \"version\": \"0.0.1\"}, \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
-    -H "Content-Type: application/json" \
+$ curl -H "Content-Type: application/json" \
+    -d '{"correlation_id": "1A", "model": {"name": "RNGModel", "version": "0.0.1"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
 
@@ -208,9 +206,8 @@ You can do this with an `extra_data` key in the JSON.
 E.g. for the RNG example:
 
 ```bash
-$ curl -v \
-    -d "{ \"correlation_id\": \"1A\", \"extra_data\": { \"foo\": \"bar\" }, \"request\": { \"seed\": 0, \"seed_version\": 2, \"mu\": 0.0, \"sigma\": 1.0}}" \
-    -H "Content-Type: application/json" \
+$ curl -H "Content-Type: application/json" \
+    -d '{"correlation_id": "1A", "extra_data": {"foo": "bar"}, "input": {"seed": 0, "seed_version": 2, "mu": 0.0, "sigma": 1.0}}' \
     http://localhost:9090/predict
 ```
 

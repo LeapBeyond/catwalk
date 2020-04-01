@@ -64,7 +64,7 @@ SCHEMAS["meta"] = Schema({
 SCHEMAS["info_response"] = SCHEMAS["meta"]
 
 # The request shell defines a schema for general requests.
-# The "request" key is None, and is filled in via the get_request_schema function below.
+# The "input" key is None, and is filled in via the get_request_schema function below.
 SCHEMAS["request_shell"] = {
     "correlation_id": And(str, len),
     "model": {
@@ -72,13 +72,13 @@ SCHEMAS["request_shell"] = {
         "version": And(str, len)
     },
     Optional("extra_data"): dict,
-    "request": None
+    "input": None
 }
 
 # The response shell defines a schema for general responses.
 # The "response" key is None, and is filled in via the get_response_schema function below.
 SCHEMAS["response_shell"] = copy.deepcopy(SCHEMAS["request_shell"])
-SCHEMAS["response_shell"]["response"] = None
+SCHEMAS["response_shell"]["output"] = None
 
 # Make the model optional in the request
 SCHEMAS["request_shell"][Optional("model")] = SCHEMAS["request_shell"]["model"]
@@ -121,48 +121,48 @@ def to_schema(data) -> Schema:
     return Schema(schema)
 
 
-def get_request_schema(request_schema, io_type=ModelIOTypes.PYTHON_DICT) -> Schema:
-    """Retrieves a request Schema object by copying the request_shell Schema and filling in the "request" key.
+def get_request_schema(input_schema, io_type=ModelIOTypes.PYTHON_DICT) -> Schema:
+    """Retrieves a request Schema object by copying the request_shell Schema and filling in the "input" key.
 
-    :param Schema|dict request_schema: The request schema to put in the "request" key. Can be a dict or Schema object.
+    :param Schema|dict input_schema: The input schema to put in the "input" key. Can be a dict or Schema object.
     :param str io_type: The IO type of the model @see ModelIOTypes.
     :return Schema: the complete request Schema object
     """
-    if isinstance(request_schema, dict):
-        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and request_schema["type"] == "object"
-        request_schema = to_schema(request_schema)
+    if isinstance(input_schema, dict):
+        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and input_schema["type"] == "object"
+        input_schema = to_schema(input_schema)
         if or_wrap_array:
-            request_schema = Or([request_schema], request_schema)
+            input_schema = Or([input_schema], input_schema)
     request_shell = copy.deepcopy(SCHEMAS["request_shell"])
-    request_shell["request"] = request_schema
+    request_shell["input"] = input_schema
     return Schema(request_shell)
 
 
-def get_response_schema(request_schema, response_schema, io_type=ModelIOTypes.PYTHON_DICT, include_correlation_id=True) -> Schema:
-    """Retrieves a response Schema object by copying the response_shell Schema and filling in the "request" and
-    "response" keys.
+def get_response_schema(input_schema, output_schema, io_type=ModelIOTypes.PYTHON_DICT, include_correlation_id=True) -> Schema:
+    """Retrieves a response Schema object by copying the response_shell Schema and filling in the "input" and
+    "output" keys.
 
-    :param Schema|dict request_schema: The request schema to put in the "request" key. Can be a dict or Schema object.
-    :param Schema|dict response_schema: The response schema to put in the "response" key. Can be a dict or Schema
+    :param Schema|dict input_schema: The input schema to put in the "input" key. Can be a dict or Schema object.
+    :param Schema|dict output_schema: The output schema to put in the "output" key. Can be a dict or Schema
                                             object.
     :param str io_type: The IO type of the model @see ModelIOTypes.
     :param bool include_correlation_id: Some responses do not require the correlation_id.
                                             Set this to false to remove it from the Schema.
     :return Schema: the complete response Schema object
     """
-    if isinstance(request_schema, dict):
-        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and request_schema["type"] == "object"
-        request_schema = to_schema(request_schema)
+    if isinstance(input_schema, dict):
+        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and input_schema["type"] == "object"
+        input_schema = to_schema(input_schema)
         if or_wrap_array:
-            request_schema = Or([request_schema], request_schema)
-    if isinstance(response_schema, dict):
-        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and response_schema["type"] == "object"
-        response_schema = to_schema(response_schema)
+            input_schema = Or([input_schema], input_schema)
+    if isinstance(output_schema, dict):
+        or_wrap_array = io_type == ModelIOTypes.PANDAS_DATA_FRAME and output_schema["type"] == "object"
+        output_schema = to_schema(output_schema)
         if or_wrap_array:
-            response_schema = Or([response_schema], response_schema)
+            output_schema = Or([output_schema], output_schema)
     response_shell = copy.deepcopy(SCHEMAS["response_shell"])
     if not include_correlation_id:
         del response_shell["correlation_id"]
-    response_shell["request"] = request_schema
-    response_shell["response"] = response_schema
+    response_shell["input"] = input_schema
+    response_shell["output"] = output_schema
     return Schema(response_shell)
