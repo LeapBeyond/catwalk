@@ -11,21 +11,21 @@ def main():
 
 
 def model_options(f):
-    f = click.option("--model-path", "-m", default=".", envvar="MODEL_PATH",
+    f = click.option("--model-path", "-m", default=".", envvar="MODEL_PATH", show_default=True,
                      help="The path to the model directory we're working with")(f)
     return f
 
 
 def server_options(f):
-    f = click.option("--server-config", "-c", default=None, envvar="SERVER_CONFIG",
+    f = click.option("--server-config", "-c", default=None, envvar="SERVER_CONFIG", show_default=True,
                      help="Specifies the path to the server's configuration.")(f)
-    f = click.option("--server-port", "-p", default=9090, envvar="SERVER_PORT",
+    f = click.option("--server-port", "-p", default=9090, envvar="SERVER_PORT", show_default=True,
                      help="Specifies the port Flask will listen on.")(f)
     return f
 
 
 def docker_options(f):
-    f = click.option("--docker-registry", "-r", default="localhost:5000", envvar="DOCKER_REGISTRY",
+    f = click.option("--docker-registry", "-r", default="localhost:5000", envvar="DOCKER_REGISTRY", show_default=True,
                      help="Specifies the Docker repo this image is tagged against.")(f)
     return f
 
@@ -80,9 +80,9 @@ def cli_build(**kwargs):
 @model_options
 @server_options
 @docker_options
-@click.option("--server-host", "-s", default="localhost",
+@click.option("--server-host", "-s", default="localhost", show_default=True,
               help="Specifies the hostname of the server to test against.")
-@click.option("--fail-if-port-in-use", "-f", is_flag=True,
+@click.option("--fail-if-port-in-use", "-f", is_flag=True, show_default=True,
               help="If specified, the test will fail is the specified port is already in use. "
                    "Default behaviour is to kill all containers using the port.")
 def cli_test_image(**kwargs):
@@ -93,7 +93,7 @@ def cli_test_image(**kwargs):
 @model_options
 @server_options
 @docker_options
-@click.option("--deploy-mode", "-d", default="compose", type=click.Choice(["compose"]),
+@click.option("--deploy-mode", "-d", default="compose", type=click.Choice(["compose"]), show_default=True,
               help="The deploy mode controls where we are deploying to. For now, the only option is `compose`.")
 @click.option("--volumes", "-v", multiple=True,
               help="Adds extra volume mounts to the deployed container.")

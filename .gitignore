@@ -10,3 +10,7 @@ example_models/*/.dockerignore
 example_models/*/docker-compose.yml
 example_models/**/config.yml
 .ipynb_checkpoints
+tutorials/**/Dockerfile
+tutorials/**/.dockerignore
+tutorials/**/docker-compose.yml
+tutorials/**/config.yml
