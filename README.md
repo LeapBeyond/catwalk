@@ -2,6 +2,8 @@
 
 `catwalk` is a model wrapping and serving platform.
 
+![Python package](https://github.com/LeapBeyond/catwalk/workflows/Python%20package/badge.svg)
+
 This README contains technical information about the python package.
 For User documentation, please refer to the [Wiki](https://github.com/LeapBeyond/catwalk/wiki/).
 
