@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 class Model(object):
     """This Model implements an ANN neuron with a sigmoid activation function.
     """

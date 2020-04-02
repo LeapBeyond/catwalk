@@ -56,6 +56,27 @@ def api_error(message, status_code=500, request_data=None) -> Response:
     return json_response(response, status_code)
 
 
+def ensure_correlation_id(data):
+    """Checks for a "correlation_id" key and generates one if it doesn't exist.
+
+    :param dict data:
+    """
+    if "correlation_id" not in data:
+        data["correlation_id"] = str(uuid4())
+
+
+def ensure_model(data):
+    """Makes sure thet a "model" key is in the data dict.
+
+    :param dict data:
+    """
+    if model is not None and "model" not in data:
+        data["model"] = {
+            "name": model.info["name"],
+            "version": model.info["version"]
+        }
+
+
 @app.route("/info")
 def info() -> Response:
     """The info end-point, returns metadata about the loaded model.
@@ -80,30 +101,22 @@ def predict() -> Response:
     if model is None:
         return api_error("No model loaded.")
 
-    # Try to parse the JSON body
     try:
+        # Try to parse the JSON body
         data = request.get_json()
-    except BadRequest as err:
-        return api_error("Invalid POST data.", 400)
-
-    # Try to validate the input data
-    try:
+        # Try to validate the input data
         in_schema.validate(data)
-    except SchemaError as err:
+    except BadRequest:
+        return api_error("Invalid POST data.", 400)
+    except SchemaError:
         return api_error("Invalid POST data.", 400)
 
-    if "correlation_id" not in data:
-        data["correlation_id"] = str(uuid4())
+    ensure_correlation_id(data)
+    ensure_model(data)
 
     # Test to see if the model loaded matches the request
-    if "model" in data:
-        if not is_loaded_model(data, model.info):
-            return api_error("Model not found.", 404, data)
-    else:
-        data["model"] = {
-            "name": model.info["name"],
-            "version": model.info["version"]
-        }
+    if not is_loaded_model(data, model.info):
+        return api_error("Model not found.", 404, data)
 
     # All checks complete, run predict
     logger.info("correlation_id: %s data validated.", data["correlation_id"])
@@ -175,7 +188,7 @@ def load_model(path):
         try:
             import pandas
             pd = pandas
-        except ImportError as err:
+        except ImportError:
             logger.error("Unable to import pandas. Was it in your requirements.txt?")
 
     return m

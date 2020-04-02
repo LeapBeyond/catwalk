@@ -81,7 +81,7 @@ class TestImage(unittest.TestCase):
             volumes.append("{}:/certs:ro".format(osp.abspath(osp.join(self.server_config, "certs"))))
 
         self.container = client.containers.run("/".join([self.docker_registry, self.tag]),
-                                               ports={str(self.server_port)+"/tcp": self.server_port},
+                                               ports={str(self.server_port) + "/tcp": self.server_port},
                                                volumes=volumes,
                                                user=random.randrange(10000, 20000),
                                                detach=True)
@@ -114,7 +114,7 @@ class TestImage(unittest.TestCase):
             self.logger.info("Attempting {} request...".format(self.http))
             try:
                 response = request.urlopen("{}://{}:{}/info".format(self.http, self.server_host, self.server_port), context=self.ssl_context)
-            except RemoteDisconnected as err:
+            except RemoteDisconnected:
                 time.sleep(1)
                 t += 1
 
@@ -216,7 +216,7 @@ class TestImage(unittest.TestCase):
                 data = json.loads(data)
                 self.assertIsInstance(data, dict,
                                       "Response to /predict should be json object")
-            except json.decoder.JSONDecodeError as err:
+            except json.decoder.JSONDecodeError:
                 self.fail("Response to /predict should be json")
 
         self.assertTrue(got_error)

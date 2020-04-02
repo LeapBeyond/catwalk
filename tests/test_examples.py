@@ -1,7 +1,6 @@
 import unittest
 import os
 import os.path as osp
-import sys
 
 from catwalk.cicd import test_model, test_server
 

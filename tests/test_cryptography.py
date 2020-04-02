@@ -11,7 +11,7 @@ class TestAESGCM(unittest.TestCase):
         bit_length = 256
         key = AESGCMB64Cipher.generate_key(bit_length)
         self.assertIsInstance(key, str)
-        self.assertEqual(len(key), bit_length/4)
+        self.assertEqual(len(key), bit_length / 4)
 
     def test_encryption(self):
         print("Testing encryption")

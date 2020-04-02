@@ -1,7 +1,5 @@
-import sys
 import os.path as osp
 import unittest
-import importlib
 
 from schema import SchemaError
 import yaml
@@ -132,50 +130,38 @@ class TestModel(BaseTest):
         return m
 
     def _validate(self, X, y, in_schema, out_schema, model, io_type=ModelIOTypes.PYTHON_DICT):
+        if io_type == ModelIOTypes.PANDAS_DATA_FRAME:
+            X_dict = X.to_dict(orient="records")
+            y_dict = y.to_dict(orient="records")
+        else:
+            X_dict = X
+            y_dict = y
+
+        r = None
+        r_dict = None
+
         # Validate against schemas
         try:
+            in_schema.validate(X_dict)
+            out_schema.validate(y_dict)
+
+            # Call predict
+            r = model.predict(X)
             if io_type == ModelIOTypes.PANDAS_DATA_FRAME:
-                in_schema.validate(X.to_dict(orient="records"))
+                r_dict = r.to_dict(orient="records")
             else:
-                in_schema.validate(X)
+                r_dict = r
+
+            out_schema.validate(r_dict)
+
+            # Check model gives the expected answer
+            self.assertEqual(r_dict, y_dict)
         except SchemaError as err:
-            self.logger.error("Input schema validation failed")
-            self.logger.error("Input:", X)
+            self.logger.error("Expected input/output schema validation failed")
+            self.logger.error("Input:", X_dict)
+            self.logger.error("Output:", y_dict)
+            self.logger.error("Result:", r_dict)
             self.fail(err)
-
-        try:
-            if io_type == ModelIOTypes.PANDAS_DATA_FRAME:
-                out_schema.validate(y.to_dict(orient="records"))
-            else:
-                out_schema.validate(y)
-        except SchemaError as err:
-            self.logger.error("Expected output schema validation failed")
-            self.logger.error("Input:", X)
-            self.logger.error("Expected:", y)
-            self.fail(err)
-
-        # Call predict
-        r = model.predict(X)
-
-        try:
-            # Validate result against out schemas
-            if io_type == ModelIOTypes.PANDAS_DATA_FRAME:
-                out_schema.validate(r.to_dict(orient="records"))
-            else:
-                out_schema.validate(r)
-        except SchemaError as err:
-            self.logger.error("Result schema validation failed")
-            self.logger.error("Input:", X)
-            self.logger.error("Expected:", y)
-            self.logger.error("Result:", r)
-            self.fail(err)
-
-        # Check model gives the expected answer
-        try:
-            if io_type == ModelIOTypes.PANDAS_DATA_FRAME:
-                self.assertEqual(r.to_dict(), y.to_dict())
-            else:
-                self.assertEqual(r, y)
         except AssertionError as e:
             self.logger.error("Result is not what was expected")
             self.logger.error(r)

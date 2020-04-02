@@ -80,14 +80,14 @@ def start_nginx(config=None, model_path=".", port=9090):
     kwargs.update({"access_log": access_log, "error_log": error_log})
 
     nginx_conf = "nginx{}.conf".format("-https" if ssl_enabled else "")
-    template = env.get_template(nginx_conf+".j2")
+    template = env.get_template(nginx_conf + ".j2")
     rendered = template.render(**kwargs)
     file_path = osp.join(nginx_path, nginx_conf)
     with open(file_path, "w") as fp:
         fp.write(rendered)
 
     wsgi = "wsgi.py"
-    template = env.get_template(wsgi+".j2")
+    template = env.get_template(wsgi + ".j2")
     rendered = template.render(**kwargs)
     file_path = osp.join(nginx_path, wsgi)
     with open(file_path, "w") as fp:

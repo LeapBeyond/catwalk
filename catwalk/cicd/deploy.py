@@ -10,7 +10,7 @@ def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, do
     """Prepares the model to be deployed with Compose by generating a docker-compose file"""
     model_path = osp.abspath(model_path)
     model_tag, model_version = get_model_tag_and_version(model_path)
-    image_name = "/".join([docker_registry, model_tag+":"+model_version])
+    image_name = "/".join([docker_registry, model_tag + ":" + model_version])
 
     if volumes is None:
         volumes = []
@@ -24,7 +24,7 @@ def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, do
     else:
         server_config_path, server_config_file = osp.split(osp.abspath(server_config))
         server_config = "/config/" + server_config_file
-        volumes.append(server_config_path+":/config")
+        volumes.append(server_config_path + ":/config")
 
     kwargs = {
         "docker_registry": docker_registry,
@@ -41,7 +41,7 @@ def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, do
     env = Environment(loader=PackageLoader("catwalk", "templates"))
 
     for f in files_to_create:
-        template_file = f+".j2"
+        template_file = f + ".j2"
         if template_file[0] == ".":
             template_file = template_file[1:]
         template = env.get_template(template_file)

@@ -28,7 +28,7 @@ def build_prep(model_path=".", server_config=None, server_port=9090, docker_regi
     env = Environment(loader=PackageLoader("catwalk", "templates"))
 
     for f in files_to_create:
-        template_file = f+".j2"
+        template_file = f + ".j2"
         if template_file[0] == ".":
             template_file = template_file[1:]
         template = env.get_template(template_file)
@@ -51,7 +51,7 @@ def build(model_path=".", docker_registry="localhost:5000", no_cache=False):  # 
 
     # Perform the docker build
     cmd = ["docker", "build", model_path]
-    cmd += ["-t", image_name+":"+model_version]
+    cmd += ["-t", image_name + ":" + model_version]
     if no_cache:
         cmd += ["--no-cache"]
 
@@ -61,7 +61,7 @@ def build(model_path=".", docker_registry="localhost:5000", no_cache=False):  # 
     if result.returncode != 0:
         return result.returncode
 
-    cmd = ["docker", "push", image_name+":"+model_version]
+    cmd = ["docker", "push", image_name + ":" + model_version]
 
     print(" ".join(cmd))
     result = subprocess.run(cmd, check=True)
