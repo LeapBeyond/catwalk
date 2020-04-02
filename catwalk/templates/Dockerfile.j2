@@ -1,7 +1,7 @@
 FROM {{ docker_registry }}/catwalk:{{ catwalk_version }}
 
 COPY . model/
-RUN if [ -f "model/requirements.txt" ]; then cd model && pip install -r requirements.txt && cd ..; fi
+RUN if [ -f "model/requirements.txt" ]; then mkdir /.local && chmod 0777 /.local && cd model && pip install -r requirements.txt && cd ..; fi
 
 ENV MODEL_PATH=model
 ENV SERVER_CONFIG={{ server_config }}

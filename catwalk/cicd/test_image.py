@@ -5,7 +5,7 @@ import time
 import json
 import yaml
 from urllib import request
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from http.client import RemoteDisconnected
 from os import path as osp
 import ssl
@@ -23,7 +23,8 @@ from ..utils import get_docker_tag, get_model_class
 
 class TestImage(unittest.TestCase):
     def __init__(self, model_path=".", server_config=None, server_port=9090,
-                 docker_registry="localhost:5000", server_host="localhost", fail_if_port_in_use=False, *args, **kwargs):
+                 docker_registry="localhost:5000", server_host="localhost", fail_if_port_in_use=False,
+                 docker_client=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.model_path = model_path
         self.server_config = server_config
@@ -31,6 +32,7 @@ class TestImage(unittest.TestCase):
         self.docker_registry = docker_registry
         self.server_host = server_host
         self.fail_if_port_in_use = fail_if_port_in_use
+        self.client = docker_client
 
     def setUp(self):
         super().setUp()
@@ -61,7 +63,7 @@ class TestImage(unittest.TestCase):
         self.logger.info("Testing " + self.tag)
 
         # Create docker client
-        client = docker.from_env()
+        client = docker.from_env() if self.client is None else self.client
 
         # Check for existing container(s) using the specified port
         containers = client.containers.list(filters={"expose": self.server_port})
@@ -76,7 +78,7 @@ class TestImage(unittest.TestCase):
         # Spin up our container
         volumes = []
         if self.server_config is not None:
-            volumes.append("{}:/opt/app-root/src/conf:ro".format(osp.abspath(self.server_config)))
+            volumes.append("{}:/config:ro".format(osp.abspath(self.server_config)))
         if ssl_enabled:
             volumes.append("{}:/certs:ro".format(osp.abspath(osp.join(self.server_config, "certs"))))
 
@@ -90,10 +92,9 @@ class TestImage(unittest.TestCase):
         time.sleep(1)
 
     def tearDown(self):
-        super().tearDown()
-
         # Shutdown the image
         self.container.kill()
+        super().tearDown()
 
     def runTest(self):
         self.logger.info("Testing image starts correctly")
@@ -114,7 +115,8 @@ class TestImage(unittest.TestCase):
             self.logger.info("Attempting {} request...".format(self.http))
             try:
                 response = request.urlopen("{}://{}:{}/info".format(self.http, self.server_host, self.server_port), context=self.ssl_context)
-            except RemoteDisconnected:
+            except (RemoteDisconnected, ConnectionResetError, URLError) as err:
+                print(err)
                 time.sleep(1)
                 t += 1
 
@@ -166,7 +168,7 @@ class TestImage(unittest.TestCase):
             "extra_data": {
                 "foo": "bar"
             },
-            "request": X_test,
+            "input": X_test,
         }
 
         # Make the request

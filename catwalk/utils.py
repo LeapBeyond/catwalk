@@ -1,4 +1,5 @@
 import re
+import os
 import os.path as osp
 import importlib.util as il_util
 import subprocess
@@ -57,6 +58,9 @@ def get_model_tag_and_version(model_path) -> (str, str):
 def install_requirements(model_path):
     requirements_path = osp.join(model_path, "requirements.txt")
     if osp.exists(requirements_path):
-        return subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
-                                     cwd=model_path)
+        cmd = [sys.executable, "-m", "pip", "install"]
+        if not os.access(sys.executable, os.W_OK):
+            cmd.append("--user")
+        cmd += ["-r", "requirements.txt"]
+        return subprocess.check_call(cmd, cwd=model_path)
     return 0
