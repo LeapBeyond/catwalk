@@ -2,13 +2,10 @@
 .tox
 __pycache__
 *.egg-info
-example_models
-!example_models/rng
 tests
 .coverage
 **/.dockerignore
 .gitignore
 **/Dockerfile
-report_coverage.sh
 requirements.txt
 tox.ini
