@@ -1,8 +1,9 @@
 import logging
 import os.path as osp
-import subprocess
 import sys
 import unittest
+
+from ..utils import install_requirements
 
 
 class BaseTest(unittest.TestCase):
@@ -23,9 +24,6 @@ class BaseTest(unittest.TestCase):
         self._install_requirements()
 
     def _install_requirements(self):
-        requirements_path = osp.join(self.model_path, "requirements.txt")
-        if osp.exists(requirements_path):
-            status_code = subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
-                                                cwd=self.model_path)
-            self.assertEqual(status_code, 0, "Pip install failed.")
-            self.logger.info("Installed requirements.txt")
+        status_code = install_requirements(self.model_path)
+        self.assertEqual(status_code, 0, "Pip install -r requirements.txt failed.")
+        self.logger.info("Installed requirements.txt")

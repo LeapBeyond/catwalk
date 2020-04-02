@@ -4,6 +4,14 @@ from catwalk.cicd import test_model, test_server, build_prep, build, test_image,
 from catwalk.server import serve
 
 
+def test_all(model_path="."):
+    for test in [test_model, test_server]:
+        result = test(model_path)
+        if not result:
+            return result
+    return True
+
+
 @click.group()
 @click.version_option(message="%(prog)s %(version)s")
 def main():
@@ -35,16 +43,21 @@ def docker_options(f):
 @server_options
 @click.option("--debug", "-d", is_flag=True,
               help="Specifies weather or not to run in debug mode (i.e. with debug server etc.).")
-@click.option("--test", "-t", is_flag=True, envvar="RUN_TESTS",
-              help="Specifies weather or not to run the model tests before starting up the server.")
+@click.option("--run-tests/--no-run-tests", default=True, envvar="RUN_TESTS",
+              help="Specifies weather or not to run the model and server tests before starting up the server.")
 def cli_serve(**kwargs):
-    if kwargs["test"]:
-        for test in [test_model, test_server]:
-            result = test(kwargs["model_path"])
-            if not result:
-                return 1
-    del kwargs["test"]
-    serve(**kwargs)
+    if kwargs["run_tests"]:
+        if not test_all(model_path=kwargs["model_path"]):
+            return 1
+    del kwargs["run_tests"]
+    return serve(**kwargs)
+
+
+@main.command(name="test")
+@model_options
+def cli_test_all(**kwargs):
+    if not test_all(**kwargs):
+        return 1
 
 
 @main.command(name="test-model")

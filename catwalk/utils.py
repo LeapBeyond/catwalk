@@ -1,6 +1,7 @@
 import re
 import os.path as osp
 import importlib.util as il_util
+import subprocess
 import sys
 
 import yaml
@@ -51,3 +52,11 @@ def get_model_tag_and_version(model_path) -> (str, str):
     model_tag = get_docker_tag(meta)
     model_version = meta["version"]
     return model_tag, model_version
+
+
+def install_requirements(model_path):
+    requirements_path = osp.join(model_path, "requirements.txt")
+    if osp.exists(requirements_path):
+        return subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"],
+                                     cwd=model_path)
+    return 0

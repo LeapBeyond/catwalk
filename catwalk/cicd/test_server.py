@@ -1,8 +1,9 @@
-import unittest
-import yaml
+import logging
 from os import path as osp
+import unittest
 
 from schema import SchemaError
+import yaml
 
 from ..validation.schema import get_schema, get_response_schema
 from ..validation.model import ModelIOTypes
@@ -26,12 +27,21 @@ class TestServer(BaseTest):
 
         app_server.init(self.config_path, self.model_path)
         app_server.app.config["TESTING"] = True
+
+        self.app_logger = app_server.app.logger
+        self.original_log_level = self.app_logger.level
+        self.app_logger.setLevel(logging.CRITICAL)
+
         self.client = app_server.app.test_client()
 
     def runTest(self):
         self._test_status()
         model_info = self._test_info()
         self._test_predict(model_info)
+
+    def tearDown(self):
+        self.app_logger.setLevel(self.original_log_level)
+        super().tearDown()
 
     def _test_status(self):
         self.logger.info("Tessting HTTP GET /status")
@@ -41,8 +51,8 @@ class TestServer(BaseTest):
         self.assertEqual(response.status_code, 200,
                          "Response code to /status should be 200. Got code {}".format(response.status_code))
 
-        self.assertEquals(len(response.data), 0,
-                          "Response bodyto /status should be empty")
+        self.assertEqual(len(response.data), 0,
+                         "Response bodyto /status should be empty")
 
     def _test_info(self):
         self.logger.info("Testing HTTP GET /info")
