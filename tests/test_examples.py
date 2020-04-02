@@ -3,23 +3,13 @@ import os.path as osp
 import time
 import unittest
 
-import docker
-from docker.errors import APIError
-
 from catwalk.cicd import test_model, test_server, build_prep, build, test_image
 
 
 class TestExamples(unittest.TestCase):
 
     def setUp(self):
-        self.run_docker_tests = False
-        try:
-            client = docker.from_env()
-            images = client.images.list()
-            self.run_docker_tests = images is not None
-            self.client = client
-        except APIError:
-            pass
+        self.run_docker_tests = os.environ.get("GITHUB_WORKFLOW", None) is not None
         self.i = 0
 
     def test_examples(self):
@@ -50,7 +40,7 @@ class TestExamples(unittest.TestCase):
             build_prep(model_path=model_path, server_port=server_port)
             build(model_path, no_cache=True)
             time.sleep(1)
-            r = test_image(model_path=model_path, server_port=server_port, docker_client=self.client)
+            r = test_image(model_path=model_path, server_port=server_port)
             self.assertTrue(r)
             time.sleep(1)
             self.i += 1
