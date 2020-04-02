@@ -52,7 +52,7 @@ class TestServer(BaseTest):
                          "Response code to /status should be 200. Got code {}".format(response.status_code))
 
         self.assertEqual(len(response.data), 0,
-                         "Response bodyto /status should be empty")
+                         "Response body to /status should be empty")
 
     def _test_info(self):
         self.logger.info("Testing HTTP GET /info")
