@@ -36,17 +36,13 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 
 ## Setup
 
-This project uses [tox](https://tox.readthedocs.io/) to specify tests and environments.  
-
-To develop the module, setup a venv and install it in "editable" mode.
-
-This can be done with `tox`:
+The simplest way to install catwalk is via pip (not yet, but let's illustrate the simplest installation):
 
 ```bash
-$ tox --devenv catwalk-venv
+$ pip install catwalk
 ```
 
-Or with `pip` in an existing venv:
+To contribute code to the module, clone this repo and install it in "editable" mode in a venv.
 
 ```bash
 (catwalk-venv) $ pip install --editable .
@@ -54,11 +50,24 @@ Or with `pip` in an existing venv:
 
 ### Running the tests
 
-The test suite can be simply run with `tox`:
+This project uses [tox](https://tox.readthedocs.io/) to specify tests and environments.
+
+We don't include tox in the module's requirements, so if you must install it separately:
+
+```bash
+$ pip install tox
+```
+
+Then, the test suite can be simply run with `tox`:
 
 ```bash
 $ tox
 ```
+
+## Integration with docker
+
+The `catwalk build` command builds docker images, but won't work unless you have docker installed and configured on your machine.
+If you'd like to use these features, you must [setup docker](https://www.docker.com/get-started) first.
 
 ## License
 

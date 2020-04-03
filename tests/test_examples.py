@@ -43,7 +43,7 @@ class TestExamples(unittest.TestCase):
 
         try:
             build(model_path, no_cache=True, push=False)
-        except CalledProcessError:
+        except (FileNotFoundError, CalledProcessError):
             logger.warning("Docker build failed, we're probably trying to run in an environment without docker."
                            " Ignoring...")
             return
