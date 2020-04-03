@@ -22,8 +22,7 @@ class TestBuildPrep(unittest.TestCase):
         kwargs = {
             "model_path": self.model_path,
             "server_config": None,
-            "server_port": 9090,
-            "docker_registry": "localhost:5000"
+            "server_port": 9090
         }
 
         build_prep(**kwargs)

@@ -23,7 +23,7 @@ from ..utils import get_docker_tag, get_model_class
 
 class TestImage(unittest.TestCase):
     def __init__(self, model_path=".", server_config=None, server_port=9090,
-                 docker_registry="localhost:5000", server_host="localhost", fail_if_port_in_use=False,
+                 docker_registry=None, server_host="localhost", fail_if_port_in_use=False,
                  docker_client=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.model_path = model_path
@@ -82,7 +82,10 @@ class TestImage(unittest.TestCase):
         if ssl_enabled:
             volumes.append("{}:/certs:ro".format(osp.abspath(osp.join(self.server_config, "certs"))))
 
-        self.container = client.containers.run("/".join([self.docker_registry, self.tag]),
+        image_name_parts = [self.tag]
+        if self.docker_registry is not None:
+            image_name_parts.insert(0, self.docker_registry)
+        self.container = client.containers.run("/".join(image_name_parts),
                                                ports={str(self.server_port) + "/tcp": self.server_port},
                                                volumes=volumes,
                                                user=random.randrange(10000, 20000),

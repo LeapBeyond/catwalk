@@ -5,12 +5,16 @@ from jinja2 import Environment, PackageLoader
 from ..utils import get_model_tag_and_version
 
 
-def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, docker_registry="localhost:5000",
+def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, docker_registry=None,
                         volumes=None):
     """Prepares the model to be deployed with Compose by generating a docker-compose file"""
     model_path = osp.abspath(model_path)
     model_tag, model_version = get_model_tag_and_version(model_path)
-    image_name = "/".join([docker_registry, model_tag + ":" + model_version])
+    docker_tag = model_tag + ":" + model_version
+    image_name_parts = [docker_tag]
+    if docker_registry is not None:
+        image_name_parts.insert(0, docker_registry)
+    image_name = "/".join(image_name_parts)
 
     if volumes is None:
         volumes = []
@@ -30,6 +34,7 @@ def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, do
         "docker_registry": docker_registry,
         "model_tag": model_tag,
         "model_version": model_version,
+        "docker_tag": docker_tag,
         "image": image_name,
         "server_config": server_config,
         "server_port": server_port,
@@ -53,7 +58,7 @@ def deploy_prep_compose(model_path=".", server_config=None, server_port=9090, do
 
 
 def deploy_prep(deploy_mode="compose", model_path=".", server_config=None, server_port=9090,
-                docker_registry="localhost:5000", volumes=None):
+                docker_registry=None, volumes=None):
     if deploy_mode == "compose":
         deploy_prep_compose(model_path, server_config, server_port, docker_registry, volumes)
         return 0

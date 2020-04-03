@@ -33,7 +33,7 @@ def server_options(f):
 
 
 def docker_options(f):
-    f = click.option("--docker-registry", "-r", default="localhost:5000", envvar="DOCKER_REGISTRY", show_default=True,
+    f = click.option("--docker-registry", "-r", default=None, envvar="DOCKER_REGISTRY", show_default=True,
                      help="Specifies the Docker repo this image is tagged against.")(f)
     return f
 
@@ -75,7 +75,6 @@ def cli_test_server(**kwargs):
 @main.command(name="build-prep")
 @model_options
 @server_options
-@docker_options
 def cli_build_prep(**kwargs):
     build_prep(**kwargs)
 
@@ -83,6 +82,8 @@ def cli_build_prep(**kwargs):
 @main.command(name="build")
 @model_options
 @docker_options
+@click.option("--push/--no-push", "-p", default=True,
+              help="If specified, catwalk will attempt a docker push after the build.")
 @click.option("--no-cache", "-C", is_flag=True,
               help="If specified, docker will not use the build cache.")
 def cli_build(**kwargs):
