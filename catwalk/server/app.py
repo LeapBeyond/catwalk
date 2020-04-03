@@ -107,9 +107,9 @@ def predict() -> Response:
         # Try to validate the input data
         in_schema.validate(data)
     except BadRequest:
-        return api_error("Invalid POST data.", 400)
-    except SchemaError:
-        return api_error("Invalid POST data.", 400)
+        return api_error("Invalid POST data: JSON parse error.", 400)
+    except SchemaError as err:
+        return api_error("Invalid POST data: " + err.code, 400)
 
     ensure_correlation_id(data)
     ensure_model(data)
