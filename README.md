@@ -28,7 +28,7 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 ## Quick start
 
 1. Perform setup steps (below).
-2. Implement a `model.py` and `model.yml` following [the correct interface](https://github.com/LeapBeyond/catwalk/wiki/Models), or use one of the example models in `example_models`.
+2. Implement a `model.py` and `model.yml` following [the correct interface](https://github.com/LeapBeyond/catwalk/wiki/Building-your-own-model), or use one of the example models in `example_models`.
 3. Test your model with `catwalk test-model` and `catwalk test-server`.
 4. Serve your model with `catwalk serve --debug`.
 5. (Optional) Build a model server image with `catwalk build-prep` and `catwalk build`.
