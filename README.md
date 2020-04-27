@@ -25,6 +25,10 @@ Note that at the time of writing, CD into a cloud service is out-of-scope for `c
 - `tests` - Contains the unit test suite for catwalk.
 - `tutorials` - Contains code for various catwalk tutorials.
 
+### Documentation
+
+Documentation can be found on the [catwalk wiki](https://github.com/LeapBeyond/catwalk/wiki) and on the [catwalk GitHub page](https://github.com/LeapBeyond/catwalk).
+
 ## Quick start
 
 1. Perform setup steps (below).
