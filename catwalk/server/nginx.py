@@ -1,6 +1,8 @@
 ##############################################################################
 #
-# Copyright 2019 Leap Beyond Emerging Technologies B.V. (unless otherwise stated)
+# Original Copyright 2019 Amazon.com Inc
+# Original: https://github.com/awslabs/amazon-sagemaker-examples/tree/master/advanced_functionality/scikit_bring_your_own/container/decision_trees
+# Modifications to this file Copyright 2019 Leap Beyond Emerging Technologies Ltd.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -21,6 +23,9 @@ https://github.com/awslabs/amazon-sagemaker-examples/tree/master/advanced_functi
 There are two notable differences:
 1) model_server_workers has a max value.
 2) nginx conf is written at runtime so that we can support variable port numbers.
+3) supports SSL
+4) able to run as a non-root user
+5) supports a dynamic port
 """
 import multiprocessing
 import os
