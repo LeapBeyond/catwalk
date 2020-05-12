@@ -21,7 +21,7 @@ import catwalk
 
 
 setup(
-    name="catwalk",
+    name="lb-catwalk",
     version=catwalk.__version__,
     packages=find_packages(),
     package_data={"catwalk": ["templates/*.j2"]},

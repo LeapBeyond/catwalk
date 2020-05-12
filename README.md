@@ -31,7 +31,7 @@ Documentation can be found on the [catwalk wiki](https://github.com/LeapBeyond/c
 
 ## Quick start
 
-1. Perform setup steps (below).
+1. Install the `lb-catwalk` package with pip: `pip install lb-catwalk` 
 2. Implement a `model.py` and `model.yml` following [the correct interface](https://github.com/LeapBeyond/catwalk/wiki/Building-your-own-model), or use one of the example models in `example_models`.
 3. Test your model with `catwalk test-model` and `catwalk test-server`.
 4. Serve your model with `catwalk serve --debug`.
@@ -44,7 +44,7 @@ Documentation can be found on the [catwalk wiki](https://github.com/LeapBeyond/c
 The simplest way to install catwalk is via pip (not yet, but let's illustrate the simplest installation):
 
 ```bash
-$ pip install catwalk
+$ pip install lb-catwalk
 ```
 
 To contribute code to the module, clone this repo and install it in "editable" mode in a venv.
