@@ -15,6 +15,13 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Catwalk utilities:
+gets model name from yaml,
+imports model and get class implementation,
+loads model meta,
+installs requirements.
+"""
 import re
 import os
 import os.path as osp

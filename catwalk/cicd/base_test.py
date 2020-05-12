@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Setup base test, create logger, and install requirements"""
 import logging
 import os.path as osp
 import sys

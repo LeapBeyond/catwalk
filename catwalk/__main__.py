@@ -15,6 +15,11 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Catwalk main module.
+Import test, build and deployment modules.
+See respective modules for details.
+"""
 import click
 
 from catwalk.cicd import test_model, test_server, build_prep, build, test_image, deploy_prep

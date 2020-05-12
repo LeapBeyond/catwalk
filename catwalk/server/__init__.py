@@ -15,4 +15,5 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Init server"""
 from .serve import serve

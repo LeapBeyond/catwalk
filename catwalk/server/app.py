@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+The app module of catwalk, defines and instantiates the main flask app.
+Contains decorated flask functions, see help on each function for details.
+"""
 import json
 import yaml
 import logging

@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Serve model in either debug mode or production mode"""
 from . import app, nginx
 from ..utils import install_requirements
 
