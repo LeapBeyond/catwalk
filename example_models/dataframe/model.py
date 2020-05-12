@@ -15,6 +15,11 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Example model:
+Artificial neural network
+Model to load test data and predict values, using pandas dataframe format.
+"""
 import pandas as pd
 import numpy as np
 

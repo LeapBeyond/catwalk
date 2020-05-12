@@ -15,6 +15,11 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Module to test with example models.
+Uses the models in the example_models folder (details of the models can be found there),
+and if docker client works, docker image tests will run.
+"""
 import logging
 import os
 import os.path as osp

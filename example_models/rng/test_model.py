@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Tests loading data and prediction for the Gaussian random number generator model"""
 import unittest
 from model import Model
 

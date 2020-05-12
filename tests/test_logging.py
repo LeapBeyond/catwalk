@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Module to test logger"""
 import unittest
 import logging
 

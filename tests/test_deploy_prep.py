@@ -15,6 +15,12 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Module to test deployment preparations:
+creates temp model directory,
+checks files are created,
+checks vars are replaced
+"""
 import os.path as osp
 import re
 import shutil

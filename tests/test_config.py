@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Module to check configurations"""
 import unittest
 import tempfile
 import os

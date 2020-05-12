@@ -15,6 +15,11 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Example model:
+Artificial neural network
+Model to load test data and predict values.
+"""
 import numpy as np
 
 
