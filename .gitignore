@@ -16,6 +16,10 @@
 #
 ##############################################################################
 
+.DS_Store
+catwalk/.DS_Store
+example_models/.DS_Store
+tutorials/.DS_Store
 .idea
 .tox
 *.egg-info

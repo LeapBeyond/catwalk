@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Docker step by step building blocks:
+generate docker image, prepare model, and build model
+"""
 import logging
 import os.path as osp
 import subprocess

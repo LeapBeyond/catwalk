@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Example model initialiser for the tutorial.
+Contains model constructor, load test data and gives prediction.
+"""
 from os.path import join
 
 import pickle

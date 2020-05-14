@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Load and read config YAML file"""
 import logging
 import os.path as osp
 

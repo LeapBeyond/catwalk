@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Defines schema format, see individual section for details.
+Also contains modules to convert and read data dict to schema format.
+"""
 import copy
 
 from schema import Schema, And, Or, Optional

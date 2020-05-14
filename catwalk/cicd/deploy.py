@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Prepares docker compose file for deployment"""
 import os.path as osp
 
 from jinja2 import Environment, PackageLoader

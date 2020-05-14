@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Set up file of catwalk"""
 from setuptools import setup, find_packages
 
 import catwalk

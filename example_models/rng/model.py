@@ -15,6 +15,11 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Example model:
+Gaussian random number generator
+Model to load data, test and predict values.
+"""
 import random
 
 

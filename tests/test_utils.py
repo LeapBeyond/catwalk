@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Module to test utils"""
 from unittest import TestCase
 
 from catwalk.utils import get_docker_tag

@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Standard encryption protocol"""
 import os
 from base64 import standard_b64encode, standard_b64decode
 

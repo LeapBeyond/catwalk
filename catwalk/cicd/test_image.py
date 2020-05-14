@@ -15,6 +15,18 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Test the docker image with the following steps:
+create a logger,
+load model meta,
+create docker client,
+check for ports,
+spins up container,
+test new container with example data,
+validate results,
+test error 400 response,
+tear down test container.
+"""
 import sys
 import unittest
 import logging

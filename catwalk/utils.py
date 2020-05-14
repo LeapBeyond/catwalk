@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""A collection of utilities needed to manage configuration and execution of models."""
 import re
 import os
 import os.path as osp

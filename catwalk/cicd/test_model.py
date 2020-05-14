@@ -15,6 +15,20 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Test model with the following steps:
+Uses base test python file,
+test if directory exists,
+test if files exist,
+load YAML,
+validate schema,
+test import,
+test interface,
+test loading data,
+create schema,
+validate model I/O,
+check model output.
+"""
 import os.path as osp
 import unittest
 

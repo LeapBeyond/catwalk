@@ -15,4 +15,5 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""Creates the model serving API using nginx and Flask."""
 from .serve import serve

@@ -15,6 +15,9 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Validates model, which can have various IO types.
+"""
 
 
 def is_loaded_model(request, model_info):

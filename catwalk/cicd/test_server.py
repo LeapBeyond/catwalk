@@ -15,6 +15,18 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Test server with the following steps:
+Uses base test python file,
+set up model server,
+test http responses,
+validate model metadata,
+validate model I/O,
+test with specified correlation_id,
+test with a specified model,
+test with extra data,
+test error 404 response.
+"""
 import logging
 from os import path as osp
 import unittest
@@ -61,7 +73,7 @@ class TestServer(BaseTest):
         super().tearDown()
 
     def _test_status(self):
-        self.logger.info("Tessting HTTP GET /status")
+        self.logger.info("Testing HTTP GET /status")
 
         response = self.client.get("/status")
 

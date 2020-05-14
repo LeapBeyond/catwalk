@@ -15,6 +15,12 @@
 #   limitations under the License.
 #
 ##############################################################################
+"""
+Module to test building preparations by:
+creating temp model directory,
+checking if files are created,
+checking if vars are replaced
+"""
 import os.path as osp
 import re
 import shutil
