@@ -39,7 +39,7 @@ LABEL org.label-schema.docker.cmd.help="docker run --rm -it leapbeyondgroup/catw
 LABEL org.label-schema.docker.params="MODEL_PATH=string path to the model to serve,RUN_TESTS=boolean flag to enable/disable tests on server startup,SERVER_CONFIG=string path to the server config YML file,SERVER_PORT=integer port to listen on"
 
 
-RUN apt update -y && apt install -y nginx
+RUN apt-get update -y && apt-get install -y nginx
 
 WORKDIR /usr/src/app
 
