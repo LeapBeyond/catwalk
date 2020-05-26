@@ -39,4 +39,4 @@ jobs:
         if: github.event_name == 'release'
         run:
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
-          ./build.sh
+          ./build.sh --push
