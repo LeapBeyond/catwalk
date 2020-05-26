@@ -17,9 +17,38 @@
 #
 ##############################################################################
 
-set -e
 
-PUSH=${1-true}
+PUSH=false
+
+help()
+{
+  echo "Usage: ${0} [--push]"
+  echo ""
+  echo "Build and optionally push the catwalk docker image"
+  echo ""
+  echo "  --push                Push the docker image"
+  echo "  --help                Print help message and exit"
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --push)
+      PUSH=true
+      ;;
+    --help)
+      help
+      exit 0
+      ;;
+    *)
+      echo -e "Invalid argument: ${1}\n"
+      help
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+set -e
 
 source .env
 docker build . \
