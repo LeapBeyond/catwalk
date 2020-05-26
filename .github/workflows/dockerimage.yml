@@ -5,6 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  release:
+    types: [created]
 
 jobs:
 
@@ -31,5 +33,10 @@ jobs:
 
       - name: Build the Docker image
         run: |
+          ./build.sh
+
+      - name: Push image
+        if: github.event_name == 'release'
+        run:
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
           ./build.sh
