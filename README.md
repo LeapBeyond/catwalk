@@ -41,7 +41,7 @@ Documentation can be found on the [catwalk wiki](https://github.com/LeapBeyond/c
 
 ## Setup
 
-The simplest way to install catwalk is via pip (not yet, but let's illustrate the simplest installation):
+The simplest way to install catwalk is via pip:
 
 ```bash
 $ pip install lb-catwalk
